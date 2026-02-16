@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NECXYCORE · VAULT ELITE</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet"/>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0a0f;
+            --surface-dark: rgba(18, 18, 24, 0.75);
+            --glass-edge: rgba(255, 255, 255, 0.05);
+            --glass-highlight: rgba(255, 255, 255, 0.03);
+            --neon-primary: #ff1a4c;
+            --neon-glow: 0 0 15px rgba(255, 26, 76, 0.6);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --card-blur: blur(16px);
+            --transition-smooth: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            min-height: 100vh;
+            position: relative;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* animated gradient orbs */
+        body::before {
+            content: '';
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at 30% 40%, rgba(255, 26, 76, 0.2) 0%, transparent 35%),
+                        radial-gradient(circle at 80% 70%, rgba(200, 0, 50, 0.15) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48cGF0aCBkPSJNMjAgMjBhMjAgMjAgMCAwIDEgMjAgMjAgMjAgMjAgMCAwIDEtNDAgMCAyMCAyMCAwIDAgMSAyMC0yMHoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMTUiLz48L3N2Zz4=') repeat;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* glass panel */
+        .glass-panel {
+            background: var(--surface-dark);
+            backdrop-filter: var(--card-blur);
+            -webkit-backdrop-filter: var(--card-blur);
+            border: 1px solid var(--glass-edge);
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        /* header */
+        .vault-header {
+            padding: 18px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(8, 8, 12, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-edge);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.9rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(120deg, #fff 0%, #ff7080 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo i {
+            background: var(--neon-primary);
+            -webkit-text-fill-color: white;
+            background: linear-gradient(145deg, #ff1a4c, #b01030);
+            padding: 6px;
+            border-radius: 16px;
+            font-size: 1.7rem;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        #authBtn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            backdrop-filter: blur(10px);
+        }
+
+        #authBtn:hover {
+            background: var(--neon-primary);
+            border-color: var(--neon-primary);
+            box-shadow: var(--neon-glow);
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 40px;
+            border: 2px solid var(--neon-primary);
+            object-fit: cover;
+        }
+
+        /* main container */
+        .app-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 28px 24px;
+        }
+
+        /* auth gate */
+        .auth-gate {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+        }
+
+        .auth-card {
+            background: rgba(18, 18, 26, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-edge);
+            border-radius: 48px;
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .auth-card i {
+            font-size: 4rem;
+            color: var(--neon-primary);
+            margin-bottom: 20px;
+        }
+
+        .auth-card h2 {
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .auth-card p {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .google-btn {
+            background: white;
+            color: #1a1a1a;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .google-btn:hover {
+            transform: scale(1.02);
+            background: #f0f0f0;
+        }
+
+        /* toolbar */
+        .toolbar {
+            margin: 40px 0 30px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .search-wrap {
+            flex: 2;
+            min-width: 260px;
+            position: relative;
+        }
+
+        .search-wrap i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+        }
+
+        .search-wrap input {
+            width: 100%;
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-edge);
+            padding: 16px 20px 16px 52px;
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 400;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .search-wrap input:focus {
+            border-color: var(--neon-primary);
+            box-shadow: 0 0 0 3px rgba(255, 26, 76, 0.2);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--glass-edge);
+            color: var(--text-secondary);
+            padding: 10px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            backdrop-filter: blur(8px);
+        }
+
+        .filter-chip.active {
+            background: var(--neon-primary);
+            color: white;
+            border-color: var(--neon-primary);
+            box-shadow: var(--neon-glow);
+        }
+
+        .filter-chip:hover:not(.active) {
+            background: rgba(255,255,255,0.08);
+            color: white;
+        }
+
+        /* masonry grid */
+        .masonry-grid {
+            column-count: 3;
+            column-gap: 24px;
+        }
+
+        @media (max-width: 1000px) { .masonry-grid { column-count: 2; } }
+        @media (max-width: 600px) { .masonry-grid { column-count: 1; } }
+
+        .vault-card {
+            break-inside: avoid;
+            background: var(--surface-dark);
+            backdrop-filter: var(--card-blur);
+            -webkit-backdrop-filter: var(--card-blur);
+            border: 1px solid var(--glass-edge);
+            border-radius: 28px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: var(--transition-smooth);
+            position: relative;
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.5);
+        }
+
+        .vault-card:hover {
+            border-color: var(--neon-primary);
+            transform: translateY(-4px);
+            box-shadow: 0 30px 50px -15px rgba(255, 26, 76, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .type-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 30px;
+            padding: 6px 14px;
+            border: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-secondary);
+            width: 36px;
+            height: 36px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: var(--neon-primary);
+            color: white;
+            border-color: var(--neon-primary);
+            box-shadow: 0 0 12px var(--neon-primary);
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 14px;
+            word-break: break-word;
+        }
+
+        .content-block {
+            color: #d0d0e0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            word-break: break-word;
+            white-space: pre-wrap;
+            margin-bottom: 16px;
+        }
+
+        .cred-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.3);
+            padding: 8px 12px;
+            border-radius: 40px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .cred-line span {
+            font-family: 'Monaco', monospace;
+            font-size: 0.9rem;
+        }
+
+        .reveal-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .blur-hidden {
+            filter: blur(4px);
+            transition: 0.15s;
+            cursor: pointer;
+        }
+        .blur-hidden:hover { filter: blur(0); }
+
+        .card-img {
+            width: 100%;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .card-img:hover { opacity: 0.9; }
+
+        .meta-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,26,76,0.4);
+            padding: 12px 28px;
+            border-radius: 60px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 15px 40px rgba(255,26,76,0.3);
+            opacity: 0;
+            transition: 0.2s;
+            z-index: 999;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        /* modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(16px);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: #12121a;
+            border: 1px solid var(--neon-primary);
+            border-radius: 40px;
+            max-width: 500px;
+            width: 100%;
+            padding: 36px;
+            box-shadow: 0 30px 70px rgba(255,26,76,0.3);
+            animation: modalUp 0.3s ease;
+        }
+
+        @keyframes modalUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .modal-card h2 {
+            margin-bottom: 24px;
+            font-weight: 700;
+        }
+
+        .input-glass {
+            background: #1e1e2a;
+            border: 1px solid #2c2c3a;
+            border-radius: 24px;
+            padding: 16px 20px;
+            width: 100%;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.2s;
+        }
+        .input-glass:focus { border-color: var(--neon-primary); box-shadow: 0 0 0 2px rgba(255,26,76,0.3); }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500; }
+
+        .btn-primary {
+            background: var(--neon-primary);
+            border: none;
+            color: white;
+            font-weight: 700;
+            padding: 18px;
+            border-radius: 50px;
+            width: 100%;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255,26,76,0.4);
+            transition: 0.15s;
+        }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .close-modal {
+            position: absolute;
+            top: 24px; right: 24px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .loader-wrapper {
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+        .spinner {
+            width: 44px;
+            height: 44px;
+            border: 3px solid rgba(255,26,76,0.2);
+            border-top-color: var(--neon-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <header class="vault-header">
+        <div class="logo">
+            <i class="ri-shield-keyhole-fill"></i> NECXY<span style="background: none; -webkit-text-fill-color: white;">CORE</span>
+        </div>
+        <div class="user-area" id="userArea">
+            <div id="authBtn"><i class="ri-google-fill"></i> <span>Sign in</span></div>
+        </div>
+    </header>
+
+    <div class="app-container" id="appContainer">
+        <!-- Auth gate will be injected here via JS -->
+    </div>
+
+    <!-- Floating add button (visible when authenticated) -->
+    <button class="fab" id="fabAdd" style="position:fixed; bottom:30px; right:30px; width:70px; height:70px; border-radius:30px; background:var(--neon-primary); border:none; color:white; font-size:2rem; box-shadow:var(--neon-glow); cursor:pointer; display:none; align-items:center; justify-content:center; z-index:100;">
+        <i class="ri-add-line"></i>
+    </button>
+
+    <!-- MODAL (add/edit) -->
+    <div class="modal-overlay" id="itemModal">
+        <div class="modal-card" style="position:relative;">
+            <button class="close-modal" id="closeModalBtn"><i class="ri-close-line"></i></button>
+            <h2 id="modalTitle">ENCRYPT NEW</h2>
+            <div class="form-group">
+                <label>Type</label>
+                <select id="typeSelect" class="input-glass" onchange="toggleFormFields()">
+                    <option value="note">Secure Note</option>
+                    <option value="account">Credential</option>
+                    <option value="image">Image</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="inpTitle" class="input-glass" placeholder="e.g. Server X">
+            </div>
+            <div id="field-note" class="form-group">
+                <label>Content</label>
+                <textarea id="inpContent" class="input-glass" rows="4"></textarea>
+            </div>
+            <div id="field-account" class="form-group" style="display:none;">
+                <input type="text" id="inpUser" class="input-glass" placeholder="Username" style="margin-bottom:10px;">
+                <input type="text" id="inpPass" class="input-glass" placeholder="Password">
+            </div>
+            <div id="field-image" class="form-group" style="display:none;">
+                <label>Upload image</label>
+                <input type="file" id="inpFile" class="input-glass" accept="image/*">
+            </div>
+            <button class="btn-primary" id="saveBtn">SAVE TO VAULT</button>
+        </div>
+    </div>
+
+    <!-- toast -->
+    <div id="toastMsg" class="toast">Copied</div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, where, onSnapshot, updateDoc, doc, serverTimestamp, orderBy, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC6Uf7Ouu-8EgbioqBw3c-ZXX_sPVd3uMQ",
+            authDomain: "ncgames0fficial.firebaseapp.com",
+            databaseURL: "https://ncgames0fficial-default-rtdb.firebaseio.com",
+            projectId: "ncgames0fficial",
+            storageBucket: "ncgames0fficial.firebasestorage.app",
+            messagingSenderId: "14249987525",
+            appId: "1:14249987525:web:6de85034f4b7302cc8cfac"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // State
+        let currentUser = null;
+        let unsubscribeItems = null;
+        let editingId = null; // for edit modal
+        let currentFilterType = 'all'; // all, note, account, image
+        let isTrashMode = false; // we keep original trash but we might unify? keep separate toggle? but we'll keep as original spec: Data/Trash tabs. For simplicity we incorporate trash as a filter.
+
+        // UI elements
+        const appContainer = document.getElementById('appContainer');
+        const authBtn = document.getElementById('authBtn');
+        const userArea = document.getElementById('userArea');
+        const fabAdd = document.getElementById('fabAdd');
+        const modal = document.getElementById('itemModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const toast = document.getElementById('toastMsg');
+
+        // Helper functions
+        function showToast(text) {
+            toast.textContent = text;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // Auth UI
+        function renderAuthGate() {
+            appContainer.innerHTML = `
+                <div class="auth-gate">
+                    <div class="auth-card">
+                        <i class="ri-shield-keyhole-line"></i>
+                        <h2>Secure vault</h2>
+                        <p>Sign in with Google to access your encrypted data</p>
+                        <button class="google-btn" id="googleSignInBtn"><i class="ri-google-fill"></i> Continue with Google</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('googleSignInBtn').addEventListener('click', () => {
+                signInWithPopup(auth, provider).catch(err => showToast(err.message));
+            });
+        }
+
+        function renderApp() {
+            appContainer.innerHTML = `
+                <div class="toolbar">
+                    <div class="search-wrap">
+                        <i class="ri-search-line"></i>
+                        <input type="text" id="searchInput" placeholder="Search notes, credentials...">
+                    </div>
+                    <div class="filter-group" id="typeFilters">
+                        <button class="filter-chip active" data-type="all"><i class="ri-stack-line"></i> All</button>
+                        <button class="filter-chip" data-type="note"><i class="ri-file-text-line"></i> Notes</button>
+                        <button class="filter-chip" data-type="account"><i class="ri-shield-user-line"></i> Accounts</button>
+                        <button class="filter-chip" data-type="image"><i class="ri-image-line"></i> Images</button>
+                    </div>
+                </div>
+                <div class="tabs" style="display:flex; gap:8px; margin-bottom:20px;">
+                    <button class="filter-chip active" id="btn-active" data-trash="false"><i class="ri-database-2-line"></i> Active</button>
+                    <button class="filter-chip" id="btn-trash" data-trash="true"><i class="ri-delete-bin-line"></i> Trash</button>
+                </div>
+                <div id="grid" class="masonry-grid"></div>
+                <div id="loader" class="loader-wrapper" style="display:none;"><div class="spinner"></div></div>
+            `;
+            attachListeners();
+            loadItems();
+        }
+
+        function attachListeners() {
+            document.getElementById('searchInput').addEventListener('input', filterCards);
+            document.querySelectorAll('#typeFilters .filter-chip').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('#typeFilters .filter-chip').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilterType = btn.dataset.type;
+                    filterCards();
+                });
+            });
+            document.getElementById('btn-active').addEventListener('click', () => {
+                isTrashMode = false;
+                document.getElementById('btn-active').classList.add('active');
+                document.getElementById('btn-trash').classList.remove('active');
+                loadItems();
+            });
+            document.getElementById('btn-trash').addEventListener('click', () => {
+                isTrashMode = true;
+                document.getElementById('btn-trash').classList.add('active');
+                document.getElementById('btn-active').classList.remove('active');
+                loadItems();
+            });
+        }
+
+        function filterCards() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.vault-card').forEach(card => {
+                const type = card.dataset.type;
+                const matchesType = currentFilterType === 'all' || type === currentFilterType;
+                const text = (card.querySelector('.card-title')?.innerText + ' ' + (card.querySelector('.content-block')?.innerText || '')).toLowerCase();
+                const matchesSearch = text.includes(term);
+                card.style.display = matchesType && matchesSearch ? 'block' : 'none';
+            });
+        }
+
+        async function loadItems() {
+            if (!currentUser) return;
+            const grid = document.getElementById('grid');
+            const loader = document.getElementById('loader');
+            loader.style.display = 'flex';
+            grid.innerHTML = '';
+
+            if (unsubscribeItems) unsubscribeItems();
+
+            const q = query(
+                collection(db, "necxy_items"),
+                where("userId", "==", currentUser.uid),
+                where("isDeleted", "==", isTrashMode),
+                orderBy("createdAt", "desc")
+            );
+
+            unsubscribeItems = onSnapshot(q, (snapshot) => {
+                loader.style.display = 'none';
+                grid.innerHTML = '';
+                if (snapshot.empty) {
+                    grid.innerHTML = `<p style="color: #555; text-align:center; width:100%;">✦ No items found</p>`;
+                    return;
+                }
+                snapshot.forEach(docSnap => renderCard(docSnap.id, docSnap.data()));
+                filterCards(); // apply filters
+            });
+        }
+
+        function renderCard(id, data) {
+            const grid = document.getElementById('grid');
+            const card = document.createElement('div');
+            card.className = 'vault-card';
+            card.dataset.id = id;
+            card.dataset.type = data.type;
+
+            let icon = 'ri-file-text-line';
+            if (data.type === 'account') icon = 'ri-shield-user-line';
+            else if (data.type === 'image') icon = 'ri-image-line';
+
+            let contentHtml = '';
+            if (data.type === 'note') {
+                contentHtml = `<div class="content-block">${data.content || ''}</div>`;
+            } else if (data.type === 'account') {
+                contentHtml = `
+                    <div class="cred-line"><span>${data.username || ''}</span> <button class="reveal-btn" onclick="copyText('${data.username}')"><i class="ri-file-copy-line"></i></button></div>
+                    <div class="cred-line"><span class="blur-hidden">${data.password || ''}</span> 
+                        <button class="reveal-btn" onclick="copyText('${data.password}')"><i class="ri-file-copy-line"></i></button>
+                        <button class="reveal-btn" onclick="toggleBlur(this)"><i class="ri-eye-line"></i></button>
+                    </div>
+                `;
+            } else if (data.type === 'image' && data.imageUrl) {
+                contentHtml = `<img src="${data.imageUrl}" class="card-img" onclick="window.open('${data.imageUrl}')">`;
+            }
+
+            const time = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString() : '';
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <span class="type-badge"><i class="${icon}"></i> ${data.type}</span>
+                    <div class="card-actions">
+                        ${!isTrashMode ? `<button class="icon-btn" onclick="editItem('${id}')"><i class="ri-pencil-line"></i></button>` : ''}
+                        ${!isTrashMode ? `<button class="icon-btn" onclick="softDelete('${id}')"><i class="ri-delete-bin-line"></i></button>` : ''}
+                        ${isTrashMode ? `<button class="icon-btn" onclick="restoreItem('${id}')"><i class="ri-refresh-line"></i></button>` : ''}
+                        ${isTrashMode ? `<button class="icon-btn" onclick="permaDelete('${id}')"><i class="ri-close-circle-line"></i></button>` : ''}
+                    </div>
+                </div>
+                <div class="card-title">${data.title}</div>
+                ${contentHtml}
+                <div class="meta-footer">
+                    <span><i class="ri-time-line"></i> ${time}</span>
+                </div>
+            `;
+            grid.appendChild(card);
+        }
+
+        // Global functions
+        window.copyText = (txt) => {
+            navigator.clipboard?.writeText(txt).then(() => showToast('Copied!'));
+        };
+
+        window.toggleBlur = (btn) => {
+            const span = btn.closest('.cred-line')?.querySelector('.blur-hidden');
+            if (span) span.style.filter = span.style.filter === 'blur(4px)' ? 'blur(0)' : 'blur(4px)';
+        };
+
+        window.softDelete = async (id) => {
+            await updateDoc(doc(db, "necxy_items", id), { isDeleted: true });
+            showToast('Moved to trash');
+        };
+        window.restoreItem = async (id) => {
+            await updateDoc(doc(db, "necxy_items", id), { isDeleted: false });
+            showToast('Restored');
+        };
+        window.permaDelete = async (id) => {
+            if (confirm('Permanently delete? This cannot be undone.')) {
+                await deleteDoc(doc(db, "necxy_items", id));
+                showToast('Deleted forever');
+            }
+        };
+
+        window.editItem = async (id) => {
+            const docRef = doc(db, "necxy_items", id);
+            const snap = await getDoc(docRef);
+            if (!snap.exists()) return;
+            const data = snap.data();
+            editingId = id;
+            document.getElementById('typeSelect').value = data.type;
+            document.getElementById('inpTitle').value = data.title || '';
+            document.getElementById('inpContent').value = data.content || '';
+            document.getElementById('inpUser').value = data.username || '';
+            document.getElementById('inpPass').value = data.password || '';
+            document.getElementById('inpFile').value = '';
+            toggleFormFields();
+            modalTitle.innerText = 'UPDATE ITEM';
+            modal.style.display = 'flex';
+        };
+
+        // Modal logic
+        window.toggleFormFields = () => {
+            const type = document.getElementById('typeSelect').value;
+            document.getElementById('field-note').style.display = type === 'note' ? 'block' : 'none';
+            document.getElementById('field-account').style.display = type === 'account' ? 'block' : 'none';
+            document.getElementById('field-image').style.display = type === 'image' ? 'block' : 'none';
+        };
+
+        function resetModal() {
+            editingId = null;
+            document.getElementById('inpTitle').value = '';
+            document.getElementById('inpContent').value = '';
+            document.getElementById('inpUser').value = '';
+            document.getElementById('inpPass').value = '';
+            document.getElementById('inpFile').value = '';
+            modalTitle.innerText = 'ENCRYPT NEW';
+        }
+
+        fabAdd.addEventListener('click', () => {
+            resetModal();
+            modal.style.display = 'flex';
+            toggleFormFields();
+        });
+        closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
+        window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+        saveBtn.addEventListener('click', async () => {
+            const type = document.getElementById('typeSelect').value;
+            const title = document.getElementById('inpTitle').value.trim();
+            if (!title) return showToast('Title required');
+            if (!currentUser) return;
+
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="ri-loader-4-line spin"></i> SAVING';
+
+            try {
+                let payload = {
+                    title,
+                    type,
+                    isDeleted: false,
+                    createdAt: serverTimestamp(),
+                    userId: currentUser.uid
+                };
+
+                if (type === 'note') {
+                    payload.content = document.getElementById('inpContent').value;
+                } else if (type === 'account') {
+                    payload.username = document.getElementById('inpUser').value;
+                    payload.password = document.getElementById('inpPass').value;
+                } else if (type === 'image') {
+                    const file = document.getElementById('inpFile').files[0];
+                    if (file) {
+                        const storageRef = ref(storage, `users/${currentUser.uid}/${Date.now()}_${file.name}`);
+                        await uploadBytes(storageRef, file);
+                        payload.imageUrl = await getDownloadURL(storageRef);
+                    } else if (!editingId) throw new Error('File required');
+                }
+
+                if (editingId) {
+                    await updateDoc(doc(db, "necxy_items", editingId), payload);
+                    showToast('Updated');
+                } else {
+                    await addDoc(collection(db, "necxy_items"), payload);
+                    showToast('Saved');
+                }
+                modal.style.display = 'none';
+                resetModal();
+            } catch (err) {
+                showToast(err.message);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = 'SAVE TO VAULT';
+            }
+        });
+
+        // Auth state observer
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                userArea.innerHTML = `<img src="${user.photoURL || 'https://i.pravatar.cc/100'}" class="avatar"><button id="logoutBtn" style="background:rgba(255,255,255,0.05); border:none; color:white; padding:8px 16px; border-radius:30px;">Sign out</button>`;
+                document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+                renderApp();
+                fabAdd.style.display = 'flex';
+            } else {
+                userArea.innerHTML = '<div id="authBtn"><i class="ri-google-fill"></i> <span>Sign in</span></div>';
+                document.getElementById('authBtn').addEventListener('click', () => signInWithPopup(auth, provider));
+                renderAuthGate();
+                fabAdd.style.display = 'none';
+                if (unsubscribeItems) unsubscribeItems();
+            }
+        });
+
+        window.toggleFormFields = toggleFormFields; // expose
+    </script>
+</body>
+</html>
