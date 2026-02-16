@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NECXYCORE · VAULT ELITE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NECXYCORE · OBSIDIAN</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,553 +20,884 @@
 
         :root {
             --bg-dark: #0a0a0f;
-            --surface-dark: rgba(18, 18, 24, 0.75);
-            --glass-edge: rgba(255, 255, 255, 0.05);
-            --glass-highlight: rgba(255, 255, 255, 0.03);
-            --neon-primary: #ff1a4c;
-            --neon-glow: 0 0 15px rgba(255, 26, 76, 0.6);
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0b0;
-            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-            --card-blur: blur(16px);
+            --surface-glass: rgba(20, 20, 30, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            --glass-border-hover: rgba(255, 26, 76, 0.3);
+            --neon-red: #ff1a4c;
+            --red-glow: 0 0 15px rgba(255, 26, 76, 0.5);
+            --text-light: #ffffff;
+            --text-muted: #a0a0b0;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --blur-amount: blur(16px);
             --transition-smooth: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+            --safe-bottom: env(safe-area-inset-bottom);
         }
 
         body {
-            background: var(--bg-dark);
-            color: var(--text-primary);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
             font-family: var(--font-sans);
             min-height: 100vh;
-            position: relative;
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        /* animated gradient orbs */
-        body::before {
-            content: '';
+        /* Animated background orbs */
+        .bg-orbs {
             position: fixed;
-            width: 100vw;
-            height: 100vh;
-            background: radial-gradient(circle at 30% 40%, rgba(255, 26, 76, 0.2) 0%, transparent 35%),
-                        radial-gradient(circle at 80% 70%, rgba(200, 0, 50, 0.15) 0%, transparent 40%);
-            pointer-events: none;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: -2;
+            overflow: hidden;
+        }
+        .bg-orbs span {
+            position: absolute;
+            width: 30vmax;
+            height: 30vmax;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 26, 76, 0.15), transparent 70%);
+            animation: float 20s infinite ease-in-out;
+        }
+        .bg-orbs span:nth-child(1) { top: 10%; left: 10%; animation-duration: 25s; }
+        .bg-orbs span:nth-child(2) { bottom: 15%; right: 10%; width: 40vmax; height: 40vmax; background: radial-gradient(circle at 70% 70%, rgba(200, 0, 50, 0.1), transparent 80%); animation-duration: 30s; }
+        .bg-orbs span:nth-child(3) { top: 40%; left: 60%; width: 25vmax; height: 25vmax; background: radial-gradient(circle at 40% 40%, rgba(255, 80, 120, 0.1), transparent 70%); animation-duration: 22s; }
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(2%, 3%) scale(1.05); }
+            66% { transform: translate(-2%, 1%) scale(0.95); }
+            100% { transform: translate(0, 0) scale(1); }
         }
 
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48cGF0aCBkPSJNMjAgMjBhMjAgMjAgMCAwIDEgMjAgMjAgMjAgMjAgMCAwIDEtNDAgMCAyMCAyMCAwIDAgMSAyMC0yMHoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMTUiLz48L3N2Zz4=') repeat;
-            opacity: 0.3;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        /* glass panel */
-        .glass-panel {
-            background: var(--surface-dark);
-            backdrop-filter: var(--card-blur);
-            -webkit-backdrop-filter: var(--card-blur);
-            border: 1px solid var(--glass-edge);
+        /* Glass base */
+        .glass {
+            background: var(--surface-glass);
+            backdrop-filter: var(--blur-amount);
+            -webkit-backdrop-filter: var(--blur-amount);
+            border: 1px solid var(--glass-border);
             border-radius: 28px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            transition: var(--transition-smooth);
+        }
+        .glass:hover {
+            border-color: var(--glass-border-hover);
+            box-shadow: 0 20px 40px rgba(255, 26, 76, 0.2);
         }
 
-        /* header */
+        /* Premium Capsule Header — icon removed as requested */
         .vault-header {
-            padding: 18px 5%;
+            margin: 16px 5%;
+            padding: 8px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(8, 8, 12, 0.7);
+            background: rgba(20, 20, 30, 0.6);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-edge);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 60px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             position: sticky;
-            top: 0;
+            top: 10px;
             z-index: 50;
         }
 
         .logo {
             font-weight: 800;
-            font-size: 1.9rem;
+            font-size: 1.5rem;
             letter-spacing: -0.02em;
-            background: linear-gradient(120deg, #fff 0%, #ff7080 100%);
+            background: linear-gradient(120deg, #fff, #ffb0b0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             display: flex;
             align-items: center;
+            gap: 6px;
+            padding-left: 8px;
+        }
+        /* icon removed from .logo i — now only text */
+
+        .header-actions {
+            display: flex;
+            align-items: center;
             gap: 8px;
         }
-
-        .logo i {
-            background: var(--neon-primary);
-            -webkit-text-fill-color: white;
-            background: linear-gradient(145deg, #ff1a4c, #b01030);
-            padding: 6px;
-            border-radius: 16px;
-            font-size: 1.7rem;
-        }
-
-        .user-area {
+        .header-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
             display: flex;
             align-items: center;
-            gap: 20px;
-        }
-
-        #authBtn {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: white;
-            padding: 10px 22px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            justify-content: center;
+            font-size: 1.3rem;
             cursor: pointer;
             transition: var(--transition-smooth);
             backdrop-filter: blur(10px);
         }
-
-        #authBtn:hover {
-            background: var(--neon-primary);
-            border-color: var(--neon-primary);
-            box-shadow: var(--neon-glow);
+        .header-icon:hover {
+            background: var(--neon-red);
+            border-color: var(--neon-red);
+            box-shadow: var(--red-glow);
         }
 
-        .avatar {
-            width: 42px;
-            height: 42px;
+        /* Popup menu (for user) */
+        .popup-menu {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 20px;
+            min-width: 260px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            display: none;
+            z-index: 100;
+            animation: popIn 0.2s ease;
+        }
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .popup-menu.show { display: block; }
+        .popup-item {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+        }
+        .popup-item strong {
+            color: var(--text-light);
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+        .popup-item span {
+            font-size: 0.9rem;
+        }
+        .logout-btn {
+            background: rgba(255, 26, 76, 0.2);
+            border: 1px solid var(--neon-red);
+            color: white;
+            padding: 12px;
             border-radius: 40px;
-            border: 2px solid var(--neon-primary);
-            object-fit: cover;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 16px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+        .logout-btn:hover {
+            background: var(--neon-red);
         }
 
-        /* main container */
-        .app-container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 28px 24px;
+        /* Image host popup — now centered exactly as requested */
+        .image-host-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 340px;
+            background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            display: none;
+            z-index: 200; /* higher than header */
+            animation: popIn 0.2s ease;
+        }
+        .image-host-popup.show { display: block; }
+        .image-host-popup h3 {
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+        }
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+        .upload-area:hover {
+            border-color: var(--neon-red);
+            background: rgba(255, 26, 76, 0.05);
+        }
+        .upload-area i {
+            font-size: 2.5rem;
+            color: var(--text-muted);
+        }
+        #hostFileInput {
+            display: none;
+        }
+        .upload-btn {
+            background: var(--neon-red);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            margin-bottom: 16px;
+        }
+        .upload-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        /* auth gate */
-        .auth-gate {
+        .link-display {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 30px;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            word-break: break-all;
+        }
+        .link-display span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .copy-link-btn {
+            background: none;
+            border: none;
+            color: var(--neon-red);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .history-title {
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .history-list {
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .history-item span {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            cursor: pointer;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .history-item button {
+            background: none;
+            border: none;
+            color: var(--neon-red);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        /* Auth Container */
+        .auth-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 70vh;
+            min-height: 80vh;
+            padding: 20px;
         }
 
         .auth-card {
-            background: rgba(18, 18, 26, 0.8);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-edge);
+            background: rgba(20, 20, 30, 0.7);
+            backdrop-filter: var(--blur-amount);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 48px;
-            padding: 48px 40px;
+            padding: 32px 24px;
             width: 100%;
-            max-width: 420px;
-            text-align: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            max-width: 440px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            animation: fadeUp 0.4s ease;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .auth-card i {
-            font-size: 4rem;
-            color: var(--neon-primary);
+        .auth-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 28px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px;
+            border-radius: 50px;
+        }
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            color: var(--text-muted);
+        }
+        .auth-tab.active {
+            background: var(--neon-red);
+            color: white;
+            box-shadow: var(--red-glow);
+        }
+
+        .auth-form { display: none; }
+        .auth-form.active { display: block; }
+
+        .form-group {
             margin-bottom: 20px;
         }
-
-        .auth-card h2 {
-            font-weight: 600;
-            margin-bottom: 12px;
+        .form-group label {
+            display: block;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 0.85rem;
         }
 
-        .auth-card p {
-            color: var(--text-secondary);
-            margin-bottom: 32px;
-        }
-
-        .google-btn {
-            background: white;
-            color: #1a1a1a;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 40px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-
-        .google-btn:hover {
-            transform: scale(1.02);
-            background: #f0f0f0;
-        }
-
-        /* toolbar */
-        .toolbar {
-            margin: 40px 0 30px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .search-wrap {
-            flex: 2;
-            min-width: 260px;
-            position: relative;
-        }
-
-        .search-wrap i {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            font-size: 1.2rem;
-        }
-
-        .search-wrap input {
+        .input-glass {
             width: 100%;
-            background: rgba(20, 20, 30, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-edge);
-            padding: 16px 20px 16px 52px;
-            border-radius: 50px;
-            color: white;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 16px 20px;
+            color: var(--text-light);
             font-size: 1rem;
-            font-weight: 400;
             outline: none;
-            transition: 0.2s;
+            transition: var(--transition-smooth);
+            backdrop-filter: blur(10px);
         }
-
-        .search-wrap input:focus {
-            border-color: var(--neon-primary);
+        .input-glass:focus {
+            border-color: var(--neon-red);
             box-shadow: 0 0 0 3px rgba(255, 26, 76, 0.2);
         }
 
-        .filter-group {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
+        .btn-primary {
+            background: var(--neon-red);
+            border: none;
+            color: white;
+            font-weight: 700;
+            padding: 16px;
+            border-radius: 50px;
+            width: 100%;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 26, 76, 0.4);
+            transition: var(--transition-smooth);
+            margin-top: 10px;
+        }
+        .btn-primary:active { transform: scale(0.97); }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .auth-footer span {
+            color: var(--neon-red);
+            cursor: pointer;
+            font-weight: 600;
         }
 
-        .filter-chip {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--glass-edge);
-            color: var(--text-secondary);
-            padding: 10px 18px;
-            border-radius: 40px;
-            font-weight: 500;
-            font-size: 0.9rem;
+        /* Main App */
+        .app-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px 20px;
+        }
+
+        /* Premium Search Bar with integrated add */
+        .search-section {
+            margin-bottom: 24px;
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .search-wrapper input {
+            width: 100%;
+            background: rgba(20, 20, 30, 0.7);
+            backdrop-filter: var(--blur-amount);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 60px;
+            padding: 18px 70px 18px 24px;
+            color: var(--text-light);
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+        .search-wrapper input:focus {
+            border-color: var(--neon-red);
+            box-shadow: 0 0 0 3px rgba(255, 26, 76, 0.2);
+        }
+        .search-add-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--neon-red);
+            border: none;
+            color: white;
+            font-size: 1.8rem;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
             cursor: pointer;
-            transition: 0.2s;
-            backdrop-filter: blur(8px);
+            box-shadow: 0 6px 15px rgba(255, 26, 76, 0.4);
+            transition: var(--transition-smooth);
         }
+        .search-add-btn:active { transform: translateY(-50%) scale(0.9); }
 
+        /* Filter bar - all in one line */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+            background: rgba(20, 20, 30, 0.5);
+            backdrop-filter: blur(12px);
+            padding: 8px 16px;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            animation: fadeIn 0.4s ease;
+        }
+        .filter-chip {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            white-space: nowrap;
+            backdrop-filter: blur(4px);
+        }
         .filter-chip.active {
-            background: var(--neon-primary);
+            background: var(--neon-red);
             color: white;
-            border-color: var(--neon-primary);
-            box-shadow: var(--neon-glow);
+            border-color: var(--neon-red);
+            box-shadow: var(--red-glow);
+        }
+        .filter-chip:active { transform: scale(0.95); }
+
+        .filter-select {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 40px;
+            padding: 8px 16px;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 0.85rem;
+            outline: none;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            min-width: 140px;
         }
 
-        .filter-chip:hover:not(.active) {
-            background: rgba(255,255,255,0.08);
-            color: white;
+        /* Two-state toggle for active/trash */
+        .view-toggle {
+            display: flex;
+            gap: 6px;
+            margin-left: auto;
+        }
+        .view-toggle .filter-chip {
+            background: rgba(0, 0, 0, 0.3);
         }
 
-        /* masonry grid */
+        /* Masonry Grid */
         .masonry-grid {
             column-count: 3;
-            column-gap: 24px;
+            column-gap: 20px;
         }
-
-        @media (max-width: 1000px) { .masonry-grid { column-count: 2; } }
+        @media (max-width: 900px) { .masonry-grid { column-count: 2; } }
         @media (max-width: 600px) { .masonry-grid { column-count: 1; } }
 
         .vault-card {
             break-inside: avoid;
-            background: var(--surface-dark);
-            backdrop-filter: var(--card-blur);
-            -webkit-backdrop-filter: var(--card-blur);
-            border: 1px solid var(--glass-edge);
+            background: rgba(20, 20, 30, 0.7);
+            backdrop-filter: var(--blur-amount);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 28px;
-            padding: 24px;
-            margin-bottom: 24px;
+            padding: 22px;
+            margin-bottom: 20px;
             transition: var(--transition-smooth);
-            position: relative;
-            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: cardAppear 0.3s ease;
         }
-
+        @keyframes cardAppear {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         .vault-card:hover {
-            border-color: var(--neon-primary);
+            border-color: var(--neon-red);
             transform: translateY(-4px);
-            box-shadow: 0 30px 50px -15px rgba(255, 26, 76, 0.3);
+            box-shadow: 0 20px 40px rgba(255, 26, 76, 0.2);
         }
 
         .card-header {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
-
         .type-badge {
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(255,255,255,0.02);
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.3);
             border-radius: 30px;
-            padding: 6px 14px;
-            border: 1px solid rgba(255,255,255,0.05);
-            font-size: 0.8rem;
-            color: var(--text-secondary);
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-
+        .favorite-star {
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #ffb347;
+            transition: var(--transition-smooth);
+        }
+        .favorite-star.inactive { color: #444; }
+        .favorite-star.inactive:hover { color: #666; }
         .card-actions {
             display: flex;
-            gap: 8px;
+            gap: 4px;
         }
-
         .icon-btn {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-            color: var(--text-secondary);
-            width: 36px;
-            height: 36px;
-            border-radius: 40px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            width: 34px;
+            height: 34px;
+            border-radius: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
-            transition: 0.2s;
+            transition: var(--transition-smooth);
         }
-
         .icon-btn:hover {
-            background: var(--neon-primary);
+            background: var(--neon-red);
             color: white;
-            border-color: var(--neon-primary);
-            box-shadow: 0 0 12px var(--neon-primary);
+            border-color: var(--neon-red);
         }
 
         .card-title {
             font-weight: 700;
             font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+        .content-block {
+            color: #ccc;
+            font-size: 0.95rem;
+            line-height: 1.5;
             margin-bottom: 14px;
             word-break: break-word;
         }
-
-        .content-block {
-            color: #d0d0e0;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            word-break: break-word;
-            white-space: pre-wrap;
-            margin-bottom: 16px;
-        }
-
         .cred-line {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.3);
             padding: 8px 12px;
-            border-radius: 40px;
+            border-radius: 30px;
             margin-bottom: 8px;
-            border: 1px solid rgba(255,255,255,0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-
-        .cred-line span {
-            font-family: 'Monaco', monospace;
-            font-size: 0.9rem;
-        }
-
-        .reveal-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 4px;
-        }
-
         .blur-hidden {
             filter: blur(4px);
-            transition: 0.15s;
+            transition: var(--transition-smooth);
             cursor: pointer;
         }
         .blur-hidden:hover { filter: blur(0); }
 
-        .card-img {
+        .image-thumb {
             width: 100%;
-            border-radius: 18px;
-            border: 1px solid rgba(255,255,255,0.1);
+            height: 160px;
+            object-fit: cover;
+            border-radius: 16px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: var(--transition-smooth);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .card-img:hover { opacity: 0.9; }
+        .image-thumb:hover { opacity: 0.9; }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 12px 0;
+        }
+        .tag {
+            background: rgba(255, 26, 76, 0.15);
+            border: 1px solid rgba(255, 26, 76, 0.3);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            color: #ffb0b0;
+            font-weight: 600;
+        }
 
         .meta-footer {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            color: var(--text-secondary);
-            font-size: 0.75rem;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            font-size: 0.7rem;
         }
 
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) scale(0.9);
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,26,76,0.4);
-            padding: 12px 28px;
-            border-radius: 60px;
-            color: white;
-            font-weight: 500;
-            box-shadow: 0 15px 40px rgba(255,26,76,0.3);
-            opacity: 0;
-            transition: 0.2s;
-            z-index: 999;
-            pointer-events: none;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) scale(1);
-        }
-
-        /* modal */
-        .modal-overlay {
+        /* Lightbox */
+        .lightbox-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(16px);
-            z-index: 200;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(12px);
+            z-index: 300;
             display: none;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
-
-        .modal-card {
-            background: #12121a;
-            border: 1px solid var(--neon-primary);
-            border-radius: 40px;
-            max-width: 500px;
-            width: 100%;
-            padding: 36px;
-            box-shadow: 0 30px 70px rgba(255,26,76,0.3);
-            animation: modalUp 0.3s ease;
+        .lightbox-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            position: relative;
         }
-
-        @keyframes modalUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-        .modal-card h2 {
-            margin-bottom: 24px;
-            font-weight: 700;
-        }
-
-        .input-glass {
-            background: #1e1e2a;
-            border: 1px solid #2c2c3a;
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 80vh;
             border-radius: 24px;
-            padding: 16px 20px;
-            width: 100%;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            transition: 0.2s;
+            border: 2px solid var(--neon-red);
         }
-        .input-glass:focus { border-color: var(--neon-primary); box-shadow: 0 0 0 2px rgba(255,26,76,0.3); }
-
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500; }
-
-        .btn-primary {
-            background: var(--neon-primary);
-            border: none;
-            color: white;
-            font-weight: 700;
-            padding: 18px;
-            border-radius: 50px;
-            width: 100%;
-            font-size: 1rem;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(255,26,76,0.4);
-            transition: 0.15s;
-        }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .close-modal {
+        .lightbox-close {
             position: absolute;
-            top: 24px; right: 24px;
+            top: -40px;
+            right: 0;
             background: none;
             border: none;
             color: white;
-            font-size: 2rem;
+            font-size: 2.5rem;
             cursor: pointer;
         }
+        .download-btn {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--neon-red);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: var(--red-glow);
+        }
 
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            animation: fadeIn 0.2s;
+        }
+        .modal-card {
+            background: rgba(25, 25, 35, 0.95);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--neon-red);
+            border-radius: 48px;
+            max-width: 520px;
+            width: 100%;
+            padding: 32px 24px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 60px rgba(255, 26, 76, 0.3);
+            animation: modalPop 0.3s ease;
+        }
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .close-modal {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+        .close-modal:hover { color: var(--neon-red); }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 16px 0;
+        }
+        .checkbox-wrapper input {
+            width: 22px;
+            height: 22px;
+            accent-color: var(--neon-red);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--neon-red);
+            padding: 12px 28px;
+            border-radius: 60px;
+            color: var(--text-light);
+            font-weight: 600;
+            box-shadow: 0 15px 30px rgba(255, 26, 76, 0.3);
+            opacity: 0;
+            transition: 0.2s;
+            z-index: 999;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) scale(1); }
+
+        /* Loader */
         .loader-wrapper {
             display: flex;
             justify-content: center;
             padding: 40px;
         }
         .spinner {
-            width: 44px;
-            height: 44px;
-            border: 3px solid rgba(255,26,76,0.2);
-            border-top-color: var(--neon-primary);
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 26, 76, 0.2);
+            border-top-color: var(--neon-red);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Responsive fine-tuning */
+        @media (max-width: 700px) {
+            .filter-bar { border-radius: 30px; padding: 8px 12px; }
+            .view-toggle { margin-left: 0; width: 100%; justify-content: flex-end; }
+        }
+        @media (max-width: 480px) {
+            .filter-chip, .filter-select { padding: 6px 12px; font-size: 0.8rem; }
+            .header-icon { width: 40px; height: 40px; font-size: 1.2rem; }
+        }
     </style>
 </head>
 <body>
+    <!-- Animated background orbs -->
+    <div class="bg-orbs">
+        <span></span><span></span><span></span>
+    </div>
+
     <header class="vault-header">
         <div class="logo">
-            <i class="ri-shield-keyhole-fill"></i> NECXY<span style="background: none; -webkit-text-fill-color: white;">CORE</span>
+            <!-- Icon removed as requested -->
+            NECXYCORE
         </div>
-        <div class="user-area" id="userArea">
-            <div id="authBtn"><i class="ri-google-fill"></i> <span>Sign in</span></div>
+        <div class="header-actions">
+            <div class="header-icon" id="imageHostIcon"><i class="ri-image-add-line"></i></div>
+            <div class="header-icon" id="userIcon"><i class="ri-user-line"></i></div>
+        </div>
+
+        <!-- User popup -->
+        <div class="popup-menu" id="userPopup">
+            <div class="popup-item">
+                <strong>Nickname</strong>
+                <span id="popupNickname">-</span>
+            </div>
+            <div class="popup-item">
+                <strong>Real Name</strong>
+                <span id="popupRealname">-</span>
+            </div>
+            <div class="popup-item">
+                <strong>Email</strong>
+                <span id="popupEmail">-</span>
+            </div>
+            <button class="logout-btn" id="popupLogout">Sign out</button>
+        </div>
+
+        <!-- Image host popup - now centered -->
+        <div class="image-host-popup" id="imageHostPopup">
+            <h3>Upload to ImgBB</h3>
+            <div class="upload-area" id="uploadArea">
+                <i class="ri-upload-cloud-line"></i>
+                <p style="margin-top:8px;">Click or drag image</p>
+            </div>
+            <input type="file" id="hostFileInput" accept="image/*">
+            <button class="upload-btn" id="uploadHostBtn" disabled>Upload</button>
+            
+            <div id="uploadedLinkContainer" style="display: none;">
+                <div class="link-display">
+                    <span id="uploadedLink"></span>
+                    <button class="copy-link-btn" id="copyLinkBtn"><i class="ri-file-copy-line"></i></button>
+                </div>
+            </div>
+
+            <div class="history-title">Recent uploads</div>
+            <div class="history-list" id="historyList"></div>
+            <div id="uploadStatus" style="font-size:0.85rem; color:var(--text-muted); text-align:center; margin-top:8px;"></div>
         </div>
     </header>
 
-    <div class="app-container" id="appContainer">
-        <!-- Auth gate will be injected here via JS -->
-    </div>
+    <div id="mainContent"></div>
 
-    <!-- Floating add button (visible when authenticated) -->
-    <button class="fab" id="fabAdd" style="position:fixed; bottom:30px; right:30px; width:70px; height:70px; border-radius:30px; background:var(--neon-primary); border:none; color:white; font-size:2rem; box-shadow:var(--neon-glow); cursor:pointer; display:none; align-items:center; justify-content:center; z-index:100;">
-        <i class="ri-add-line"></i>
-    </button>
-
-    <!-- MODAL (add/edit) -->
+    <!-- Modal for add/edit -->
     <div class="modal-overlay" id="itemModal">
         <div class="modal-card" style="position:relative;">
             <button class="close-modal" id="closeModalBtn"><i class="ri-close-line"></i></button>
-            <h2 id="modalTitle">ENCRYPT NEW</h2>
+            <h2 id="modalTitle" style="margin-bottom:24px; font-weight:700;">ENCRYPT NEW</h2>
+            
             <div class="form-group">
                 <label>Type</label>
                 <select id="typeSelect" class="input-glass" onchange="toggleFormFields()">
@@ -575,34 +906,68 @@
                     <option value="image">Image</option>
                 </select>
             </div>
+
             <div class="form-group">
                 <label>Title</label>
                 <input type="text" id="inpTitle" class="input-glass" placeholder="e.g. Server X">
             </div>
+
             <div id="field-note" class="form-group">
                 <label>Content</label>
                 <textarea id="inpContent" class="input-glass" rows="4"></textarea>
             </div>
+
             <div id="field-account" class="form-group" style="display:none;">
                 <input type="text" id="inpUser" class="input-glass" placeholder="Username" style="margin-bottom:10px;">
                 <input type="text" id="inpPass" class="input-glass" placeholder="Password">
             </div>
+
             <div id="field-image" class="form-group" style="display:none;">
-                <label>Upload image</label>
-                <input type="file" id="inpFile" class="input-glass" accept="image/*">
+                <label>Image URL (or use uploader)</label>
+                <input type="text" id="inpImageUrl" class="input-glass" placeholder="https://...">
+                <p style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">You can also use the image host icon to upload.</p>
             </div>
+
+            <div class="form-group">
+                <label>Category</label>
+                <select id="inpCategory" class="input-glass">
+                    <option value="Personal">Personal</option>
+                    <option value="Work">Work</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Tags (comma separated)</label>
+                <input type="text" id="inpTags" class="input-glass" placeholder="e.g. secret, urgent">
+            </div>
+
+            <div class="checkbox-wrapper">
+                <input type="checkbox" id="inpFavorite">
+                <label for="inpFavorite">Mark as favorite</label>
+            </div>
+
             <button class="btn-primary" id="saveBtn">SAVE TO VAULT</button>
         </div>
     </div>
 
-    <!-- toast -->
+    <!-- Lightbox for images -->
+    <div class="lightbox-overlay" id="lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close" id="lightboxClose"><i class="ri-close-line"></i></button>
+            <img id="lightboxImg" src="" alt="">
+            <a id="downloadLink" href="#" download target="_blank"><button class="download-btn"><i class="ri-download-line"></i> Download</button></a>
+        </div>
+    </div>
+
     <div id="toastMsg" class="toast">Copied</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, where, onSnapshot, updateDoc, doc, serverTimestamp, orderBy, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, where, onSnapshot, updateDoc, doc, serverTimestamp, orderBy, deleteDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyC6Uf7Ouu-8EgbioqBw3c-ZXX_sPVd3uMQ",
@@ -618,25 +983,80 @@
         const db = getFirestore(app);
         const storage = getStorage(app);
         const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
 
-        // State
+        // ImgBB API key
+        const IMGBB_KEY = "300f9a18eade085d9e0227a7f2d56574";
+
         let currentUser = null;
         let unsubscribeItems = null;
-        let editingId = null; // for edit modal
-        let currentFilterType = 'all'; // all, note, account, image
-        let isTrashMode = false; // we keep original trash but we might unify? keep separate toggle? but we'll keep as original spec: Data/Trash tabs. For simplicity we incorporate trash as a filter.
+        let editingId = null;
+        let currentFilterType = 'all';
+        let isTrashMode = false;
+        let currentCategoryFilter = 'all';
+        let showFavoritesOnly = false;
+        let userProfile = null;
 
-        // UI elements
-        const appContainer = document.getElementById('appContainer');
-        const authBtn = document.getElementById('authBtn');
-        const userArea = document.getElementById('userArea');
-        const fabAdd = document.getElementById('fabAdd');
+        const mainContent = document.getElementById('mainContent');
         const modal = document.getElementById('itemModal');
         const modalTitle = document.getElementById('modalTitle');
         const closeModalBtn = document.getElementById('closeModalBtn');
         const saveBtn = document.getElementById('saveBtn');
         const toast = document.getElementById('toastMsg');
+
+        // Header elements
+        const userIcon = document.getElementById('userIcon');
+        const userPopup = document.getElementById('userPopup');
+        const imageHostIcon = document.getElementById('imageHostIcon');
+        const imageHostPopup = document.getElementById('imageHostPopup');
+        const popupNickname = document.getElementById('popupNickname');
+        const popupRealname = document.getElementById('popupRealname');
+        const popupEmail = document.getElementById('popupEmail');
+        const popupLogout = document.getElementById('popupLogout');
+        const uploadArea = document.getElementById('uploadArea');
+        const hostFileInput = document.getElementById('hostFileInput');
+        const uploadHostBtn = document.getElementById('uploadHostBtn');
+        const uploadStatus = document.getElementById('uploadStatus');
+        const uploadedLinkContainer = document.getElementById('uploadedLinkContainer');
+        const uploadedLinkSpan = document.getElementById('uploadedLink');
+        const copyLinkBtn = document.getElementById('copyLinkBtn');
+        const historyList = document.getElementById('historyList');
+
+        // Lightbox
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxClose = document.getElementById('lightboxClose');
+        const downloadLink = document.getElementById('downloadLink');
+
+        // Image upload history (localStorage)
+        let uploadHistory = JSON.parse(localStorage.getItem('imgbb_history')) || [];
+
+        function saveHistory(url) {
+            uploadHistory = [url, ...uploadHistory.filter(u => u !== url)].slice(0, 5);
+            localStorage.setItem('imgbb_history', JSON.stringify(uploadHistory));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            historyList.innerHTML = uploadHistory.map(url => `
+                <div class="history-item">
+                    <span onclick="useHistoryUrl('${url}')">${url}</span>
+                    <button onclick="copyHistoryUrl('${url}')"><i class="ri-file-copy-line"></i></button>
+                </div>
+            `).join('');
+        }
+
+        window.useHistoryUrl = (url) => {
+            imageHostPopup.classList.remove('show');
+            resetModal();
+            document.getElementById('typeSelect').value = 'image';
+            toggleFormFields();
+            document.getElementById('inpImageUrl').value = url;
+            modal.style.display = 'flex';
+        };
+
+        window.copyHistoryUrl = (url) => {
+            navigator.clipboard.writeText(url).then(() => showToast('Link copied!'));
+        };
 
         // Helper functions
         function showToast(text) {
@@ -645,58 +1065,273 @@
             setTimeout(() => toast.classList.remove('show'), 2000);
         }
 
-        // Auth UI
-        function renderAuthGate() {
-            appContainer.innerHTML = `
-                <div class="auth-gate">
+        // Toggle popups
+        userIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            imageHostPopup.classList.remove('show');
+            userPopup.classList.toggle('show');
+        });
+        imageHostIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userPopup.classList.remove('show');
+            imageHostPopup.classList.toggle('show');
+            renderHistory();
+        });
+        document.addEventListener('click', () => {
+            userPopup.classList.remove('show');
+            imageHostPopup.classList.remove('show');
+        });
+        [userPopup, imageHostPopup].forEach(p => p.addEventListener('click', (e) => e.stopPropagation()));
+
+        // Image host upload
+        uploadArea.addEventListener('click', () => hostFileInput.click());
+        hostFileInput.addEventListener('change', () => {
+            if (hostFileInput.files.length) {
+                uploadHostBtn.disabled = false;
+                uploadStatus.textContent = `Selected: ${hostFileInput.files[0].name}`;
+            } else {
+                uploadHostBtn.disabled = true;
+                uploadStatus.textContent = '';
+            }
+        });
+        uploadHostBtn.addEventListener('click', async () => {
+            const file = hostFileInput.files[0];
+            if (!file) return;
+            uploadHostBtn.disabled = true;
+            uploadStatus.textContent = 'Uploading...';
+            const formData = new FormData();
+            formData.append('image', file);
+            try {
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.success) {
+                    const url = data.data.url;
+                    uploadStatus.textContent = 'Upload complete!';
+                    showToast('Image uploaded!');
+                    uploadedLinkSpan.textContent = url;
+                    uploadedLinkContainer.style.display = 'block';
+                    saveHistory(url);
+                    // Optionally fill the add modal
+                    if (confirm('Use this image in a new item?')) {
+                        imageHostPopup.classList.remove('show');
+                        resetModal();
+                        document.getElementById('typeSelect').value = 'image';
+                        toggleFormFields();
+                        document.getElementById('inpImageUrl').value = url;
+                        modal.style.display = 'flex';
+                    }
+                } else {
+                    throw new Error('Upload failed');
+                }
+            } catch (err) {
+                uploadStatus.textContent = 'Error: ' + err.message;
+                showToast('Upload failed');
+            } finally {
+                uploadHostBtn.disabled = false;
+                hostFileInput.value = '';
+            }
+        });
+
+        copyLinkBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(uploadedLinkSpan.textContent).then(() => showToast('Link copied!'));
+        });
+
+        // Lightbox
+        window.openLightbox = (url) => {
+            lightboxImg.src = url;
+            downloadLink.href = url;
+            lightbox.style.display = 'flex';
+        };
+        lightboxClose.addEventListener('click', () => lightbox.style.display = 'none');
+        lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.style.display = 'none'; });
+
+        // Logout with confirmation
+        popupLogout.addEventListener('click', () => {
+            if (confirm('Are you sure you want to sign out?')) {
+                signOut(auth);
+                userPopup.classList.remove('show');
+            }
+        });
+
+        // ---------- Auth UI ----------
+        function renderAuthUI() {
+            mainContent.innerHTML = `
+                <div class="auth-container">
                     <div class="auth-card">
-                        <i class="ri-shield-keyhole-line"></i>
-                        <h2>Secure vault</h2>
-                        <p>Sign in with Google to access your encrypted data</p>
-                        <button class="google-btn" id="googleSignInBtn"><i class="ri-google-fill"></i> Continue with Google</button>
+                        <div class="auth-tabs">
+                            <div class="auth-tab active" id="tabLogin">Login</div>
+                            <div class="auth-tab" id="tabSignup">Sign up</div>
+                        </div>
+                        
+                        <div class="auth-form active" id="loginForm">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="loginEmail" class="input-glass" placeholder="your@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" id="loginPassword" class="input-glass" placeholder="••••••••">
+                            </div>
+                            <button class="btn-primary" id="loginBtn">Log in</button>
+                            <div class="auth-footer">
+                                <span id="forgotPassword">Forgot password?</span>
+                            </div>
+                        </div>
+
+                        <div class="auth-form" id="signupForm">
+                            <div class="form-group">
+                                <label>Nickname</label>
+                                <input type="text" id="signupNickname" class="input-glass" placeholder="JohnDoe">
+                            </div>
+                            <div class="form-group">
+                                <label>Real Name</label>
+                                <input type="text" id="signupRealname" class="input-glass" placeholder="John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="signupEmail" class="input-glass" placeholder="your@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" id="signupPassword" class="input-glass" placeholder="••••••••">
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm Password</label>
+                                <input type="password" id="signupConfirm" class="input-glass" placeholder="••••••••">
+                            </div>
+                            <button class="btn-primary" id="signupBtn">Create account</button>
+                        </div>
                     </div>
                 </div>
             `;
-            document.getElementById('googleSignInBtn').addEventListener('click', () => {
-                signInWithPopup(auth, provider).catch(err => showToast(err.message));
+
+            document.getElementById('tabLogin').addEventListener('click', () => {
+                document.getElementById('tabLogin').classList.add('active');
+                document.getElementById('tabSignup').classList.remove('active');
+                document.getElementById('loginForm').classList.add('active');
+                document.getElementById('signupForm').classList.remove('active');
+            });
+            document.getElementById('tabSignup').addEventListener('click', () => {
+                document.getElementById('tabSignup').classList.add('active');
+                document.getElementById('tabLogin').classList.remove('active');
+                document.getElementById('signupForm').classList.add('active');
+                document.getElementById('loginForm').classList.remove('active');
+            });
+
+            document.getElementById('loginBtn').addEventListener('click', async () => {
+                const email = document.getElementById('loginEmail').value.trim();
+                const pass = document.getElementById('loginPassword').value.trim();
+                if (!email || !pass) return showToast('Fill all fields');
+                try {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                } catch (err) {
+                    showToast(err.message);
+                }
+            });
+
+            document.getElementById('signupBtn').addEventListener('click', async () => {
+                const nickname = document.getElementById('signupNickname').value.trim();
+                const realname = document.getElementById('signupRealname').value.trim();
+                const email = document.getElementById('signupEmail').value.trim();
+                const pass = document.getElementById('signupPassword').value.trim();
+                const confirm = document.getElementById('signupConfirm').value.trim();
+                if (!nickname || !realname || !email || !pass || !confirm) return showToast('All fields required');
+                if (pass !== confirm) return showToast('Passwords do not match');
+                if (pass.length < 6) return showToast('Password must be at least 6 characters');
+                try {
+                    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                    await addDoc(collection(db, "users"), {
+                        uid: cred.user.uid,
+                        nickname,
+                        realname,
+                        email,
+                        createdAt: serverTimestamp()
+                    });
+                    showToast('Account created!');
+                } catch (err) {
+                    showToast(err.message);
+                }
+            });
+
+            document.getElementById('forgotPassword').addEventListener('click', () => {
+                const email = prompt('Enter your email address:');
+                if (email) {
+                    sendPasswordResetEmail(auth, email)
+                        .then(() => showToast('Reset email sent!'))
+                        .catch(err => showToast(err.message));
+                }
             });
         }
 
-        function renderApp() {
-            appContainer.innerHTML = `
-                <div class="toolbar">
-                    <div class="search-wrap">
-                        <i class="ri-search-line"></i>
-                        <input type="text" id="searchInput" placeholder="Search notes, credentials...">
+        // ---------- Vault UI ----------
+        function renderVault() {
+            mainContent.innerHTML = `
+                <div class="app-container">
+                    <div class="search-section">
+                        <div class="search-wrapper">
+                            <input type="text" id="searchInput" placeholder="Search notes, credentials, tags...">
+                            <button class="search-add-btn" id="searchAddBtn"><i class="ri-add-line"></i></button>
+                        </div>
                     </div>
-                    <div class="filter-group" id="typeFilters">
-                        <button class="filter-chip active" data-type="all"><i class="ri-stack-line"></i> All</button>
-                        <button class="filter-chip" data-type="note"><i class="ri-file-text-line"></i> Notes</button>
-                        <button class="filter-chip" data-type="account"><i class="ri-shield-user-line"></i> Accounts</button>
-                        <button class="filter-chip" data-type="image"><i class="ri-image-line"></i> Images</button>
-                    </div>
-                </div>
-                <div class="tabs" style="display:flex; gap:8px; margin-bottom:20px;">
-                    <button class="filter-chip active" id="btn-active" data-trash="false"><i class="ri-database-2-line"></i> Active</button>
-                    <button class="filter-chip" id="btn-trash" data-trash="true"><i class="ri-delete-bin-line"></i> Trash</button>
-                </div>
-                <div id="grid" class="masonry-grid"></div>
-                <div id="loader" class="loader-wrapper" style="display:none;"><div class="spinner"></div></div>
-            `;
-            attachListeners();
-            loadItems();
-        }
 
-        function attachListeners() {
+                    <div class="filter-bar">
+                        <div class="filter-chip active" data-type="all"><i class="ri-stack-line"></i> All</div>
+                        <div class="filter-chip" data-type="note"><i class="ri-file-text-line"></i> Notes</div>
+                        <div class="filter-chip" data-type="account"><i class="ri-shield-user-line"></i> Accounts</div>
+                        <div class="filter-chip" data-type="image"><i class="ri-image-line"></i> Images</div>
+
+                        <select id="categoryFilter" class="filter-select">
+                            <option value="all">All Categories</option>
+                            <option value="Personal">Personal</option>
+                            <option value="Work">Work</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Other">Other</option>
+                        </select>
+
+                        <div class="filter-chip" id="favoriteFilter"><i class="ri-star-fill"></i> Favorites</div>
+
+                        <div class="view-toggle">
+                            <div class="filter-chip active" id="btn-active" data-trash="false"><i class="ri-database-2-line"></i> Active</div>
+                            <div class="filter-chip" id="btn-trash" data-trash="true"><i class="ri-delete-bin-line"></i> Trash</div>
+                        </div>
+                    </div>
+
+                    <div id="grid" class="masonry-grid"></div>
+                    <div id="loader" class="loader-wrapper" style="display:none;"><div class="spinner"></div></div>
+                </div>
+            `;
+
+            // Attach listeners
             document.getElementById('searchInput').addEventListener('input', filterCards);
-            document.querySelectorAll('#typeFilters .filter-chip').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    document.querySelectorAll('#typeFilters .filter-chip').forEach(b => b.classList.remove('active'));
+            document.getElementById('searchAddBtn').addEventListener('click', () => {
+                resetModal();
+                modal.style.display = 'flex';
+                toggleFormFields();
+            });
+
+            document.querySelectorAll('.filter-bar .filter-chip[data-type]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-bar .filter-chip[data-type]').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     currentFilterType = btn.dataset.type;
                     filterCards();
                 });
             });
+
+            document.getElementById('categoryFilter').addEventListener('change', (e) => {
+                currentCategoryFilter = e.target.value;
+                filterCards();
+            });
+
+            document.getElementById('favoriteFilter').addEventListener('click', (e) => {
+                showFavoritesOnly = !showFavoritesOnly;
+                e.target.classList.toggle('active', showFavoritesOnly);
+                filterCards();
+            });
+
             document.getElementById('btn-active').addEventListener('click', () => {
                 isTrashMode = false;
                 document.getElementById('btn-active').classList.add('active');
@@ -709,17 +1344,8 @@
                 document.getElementById('btn-active').classList.remove('active');
                 loadItems();
             });
-        }
 
-        function filterCards() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            document.querySelectorAll('.vault-card').forEach(card => {
-                const type = card.dataset.type;
-                const matchesType = currentFilterType === 'all' || type === currentFilterType;
-                const text = (card.querySelector('.card-title')?.innerText + ' ' + (card.querySelector('.content-block')?.innerText || '')).toLowerCase();
-                const matchesSearch = text.includes(term);
-                card.style.display = matchesType && matchesSearch ? 'block' : 'none';
-            });
+            loadItems();
         }
 
         async function loadItems() {
@@ -742,11 +1368,11 @@
                 loader.style.display = 'none';
                 grid.innerHTML = '';
                 if (snapshot.empty) {
-                    grid.innerHTML = `<p style="color: #555; text-align:center; width:100%;">✦ No items found</p>`;
+                    grid.innerHTML = `<p style="color:#666; text-align:center; width:100%;">✦ No items found</p>`;
                     return;
                 }
                 snapshot.forEach(docSnap => renderCard(docSnap.id, docSnap.data()));
-                filterCards(); // apply filters
+                filterCards();
             });
         }
 
@@ -756,63 +1382,78 @@
             card.className = 'vault-card';
             card.dataset.id = id;
             card.dataset.type = data.type;
+            card.dataset.category = data.category || 'Other';
+            card.dataset.favorite = data.favorite || false;
+            card.dataset.tags = (data.tags || []).join(' ').toLowerCase();
 
             let icon = 'ri-file-text-line';
             if (data.type === 'account') icon = 'ri-shield-user-line';
             else if (data.type === 'image') icon = 'ri-image-line';
+
+            const tagsHtml = (data.tags && data.tags.length) ? 
+                `<div class="tag-container">${data.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>` : '';
 
             let contentHtml = '';
             if (data.type === 'note') {
                 contentHtml = `<div class="content-block">${data.content || ''}</div>`;
             } else if (data.type === 'account') {
                 contentHtml = `
-                    <div class="cred-line"><span>${data.username || ''}</span> <button class="reveal-btn" onclick="copyText('${data.username}')"><i class="ri-file-copy-line"></i></button></div>
+                    <div class="cred-line"><span>${data.username || ''}</span> <button class="icon-btn" onclick="copyText('${data.username}')"><i class="ri-file-copy-line"></i></button></div>
                     <div class="cred-line"><span class="blur-hidden">${data.password || ''}</span> 
-                        <button class="reveal-btn" onclick="copyText('${data.password}')"><i class="ri-file-copy-line"></i></button>
-                        <button class="reveal-btn" onclick="toggleBlur(this)"><i class="ri-eye-line"></i></button>
+                        <button class="icon-btn" onclick="copyText('${data.password}')"><i class="ri-file-copy-line"></i></button>
+                        <button class="icon-btn" onclick="toggleBlur(this)"><i class="ri-eye-line"></i></button>
                     </div>
                 `;
             } else if (data.type === 'image' && data.imageUrl) {
-                contentHtml = `<img src="${data.imageUrl}" class="card-img" onclick="window.open('${data.imageUrl}')">`;
+                contentHtml = `<img src="${data.imageUrl}" class="image-thumb" onclick="openLightbox('${data.imageUrl}')">`;
             }
 
-            const time = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString() : '';
+            const createdAt = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString() : '';
+            const editedAt = data.editedAt ? new Date(data.editedAt.seconds * 1000).toLocaleString() : '';
 
             card.innerHTML = `
                 <div class="card-header">
                     <span class="type-badge"><i class="${icon}"></i> ${data.type}</span>
-                    <div class="card-actions">
-                        ${!isTrashMode ? `<button class="icon-btn" onclick="editItem('${id}')"><i class="ri-pencil-line"></i></button>` : ''}
-                        ${!isTrashMode ? `<button class="icon-btn" onclick="softDelete('${id}')"><i class="ri-delete-bin-line"></i></button>` : ''}
-                        ${isTrashMode ? `<button class="icon-btn" onclick="restoreItem('${id}')"><i class="ri-refresh-line"></i></button>` : ''}
-                        ${isTrashMode ? `<button class="icon-btn" onclick="permaDelete('${id}')"><i class="ri-close-circle-line"></i></button>` : ''}
+                    <div style="display:flex; align-items:center; gap:4px;">
+                        <i class="ri-star-fill favorite-star ${data.favorite ? '' : 'inactive'}" onclick="toggleFavorite('${id}', ${!data.favorite})"></i>
+                        <div class="card-actions">
+                            ${!isTrashMode ? `<button class="icon-btn" onclick="editItem('${id}')"><i class="ri-pencil-line"></i></button>` : ''}
+                            ${!isTrashMode ? `<button class="icon-btn" onclick="duplicateItem('${id}')"><i class="ri-file-copy-line"></i></button>` : ''}
+                            ${!isTrashMode ? `<button class="icon-btn" onclick="softDelete('${id}')"><i class="ri-delete-bin-line"></i></button>` : ''}
+                            ${isTrashMode ? `<button class="icon-btn" onclick="restoreItem('${id}')"><i class="ri-refresh-line"></i></button>` : ''}
+                            ${isTrashMode ? `<button class="icon-btn" onclick="permaDelete('${id}')"><i class="ri-close-circle-line"></i></button>` : ''}
+                        </div>
                     </div>
                 </div>
                 <div class="card-title">${data.title}</div>
                 ${contentHtml}
+                ${tagsHtml}
                 <div class="meta-footer">
-                    <span><i class="ri-time-line"></i> ${time}</span>
+                    <span><i class="ri-time-line"></i> ${createdAt}</span>
+                    <span><i class="ri-pencil-line"></i> ${editedAt || '—'}</span>
                 </div>
             `;
             grid.appendChild(card);
         }
 
-        // Global functions
+        // Global functions for card actions
         window.copyText = (txt) => {
             navigator.clipboard?.writeText(txt).then(() => showToast('Copied!'));
         };
-
         window.toggleBlur = (btn) => {
             const span = btn.closest('.cred-line')?.querySelector('.blur-hidden');
             if (span) span.style.filter = span.style.filter === 'blur(4px)' ? 'blur(0)' : 'blur(4px)';
         };
-
+        window.toggleFavorite = async (id, newState) => {
+            await updateDoc(doc(db, "necxy_items", id), { favorite: newState, editedAt: serverTimestamp() });
+            showToast(newState ? 'Added to favorites' : 'Removed from favorites');
+        };
         window.softDelete = async (id) => {
-            await updateDoc(doc(db, "necxy_items", id), { isDeleted: true });
+            await updateDoc(doc(db, "necxy_items", id), { isDeleted: true, editedAt: serverTimestamp() });
             showToast('Moved to trash');
         };
         window.restoreItem = async (id) => {
-            await updateDoc(doc(db, "necxy_items", id), { isDeleted: false });
+            await updateDoc(doc(db, "necxy_items", id), { isDeleted: false, editedAt: serverTimestamp() });
             showToast('Restored');
         };
         window.permaDelete = async (id) => {
@@ -821,26 +1462,56 @@
                 showToast('Deleted forever');
             }
         };
-
+        window.duplicateItem = async (id) => {
+            const docRef = doc(db, "necxy_items", id);
+            const snap = await getDoc(docRef);
+            if (!snap.exists()) return;
+            const data = snap.data();
+            delete data.id; delete data.createdAt; delete data.editedAt;
+            data.title = data.title + ' (copy)';
+            data.createdAt = serverTimestamp();
+            await addDoc(collection(db, "necxy_items"), data);
+            showToast('Item duplicated');
+        };
         window.editItem = async (id) => {
             const docRef = doc(db, "necxy_items", id);
             const snap = await getDoc(docRef);
             if (!snap.exists()) return;
             const data = snap.data();
             editingId = id;
-            document.getElementById('typeSelect').value = data.type;
+            document.getElementById('typeSelect').value = data.type || 'note';
             document.getElementById('inpTitle').value = data.title || '';
             document.getElementById('inpContent').value = data.content || '';
             document.getElementById('inpUser').value = data.username || '';
             document.getElementById('inpPass').value = data.password || '';
-            document.getElementById('inpFile').value = '';
+            document.getElementById('inpCategory').value = data.category || 'Other';
+            document.getElementById('inpTags').value = (data.tags || []).join(', ');
+            document.getElementById('inpFavorite').checked = data.favorite || false;
+            document.getElementById('inpImageUrl').value = data.imageUrl || '';
+            // removed document.getElementById('inpFile').value = ''; because it doesn't exist
             toggleFormFields();
             modalTitle.innerText = 'UPDATE ITEM';
             modal.style.display = 'flex';
         };
 
-        // Modal logic
-        window.toggleFormFields = () => {
+        function filterCards() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.vault-card').forEach(card => {
+                const type = card.dataset.type;
+                const category = card.dataset.category;
+                const favorite = card.dataset.favorite === 'true';
+                const tags = card.dataset.tags || '';
+                const title = card.querySelector('.card-title')?.innerText.toLowerCase() || '';
+                const content = card.querySelector('.content-block')?.innerText.toLowerCase() || '';
+                const matchesType = currentFilterType === 'all' || type === currentFilterType;
+                const matchesCategory = currentCategoryFilter === 'all' || category === currentCategoryFilter;
+                const matchesFavorite = !showFavoritesOnly || favorite;
+                const matchesSearch = title.includes(term) || content.includes(term) || tags.includes(term);
+                card.style.display = matchesType && matchesCategory && matchesFavorite && matchesSearch ? 'block' : 'none';
+            });
+        }
+
+        window.toggleFormFields = function() {
             const type = document.getElementById('typeSelect').value;
             document.getElementById('field-note').style.display = type === 'note' ? 'block' : 'none';
             document.getElementById('field-account').style.display = type === 'account' ? 'block' : 'none';
@@ -853,17 +1524,13 @@
             document.getElementById('inpContent').value = '';
             document.getElementById('inpUser').value = '';
             document.getElementById('inpPass').value = '';
-            document.getElementById('inpFile').value = '';
+            document.getElementById('inpCategory').value = 'Personal';
+            document.getElementById('inpTags').value = '';
+            document.getElementById('inpFavorite').checked = false;
+            document.getElementById('inpImageUrl').value = '';
+            // removed document.getElementById('inpFile').value = ''; // no such element
             modalTitle.innerText = 'ENCRYPT NEW';
         }
-
-        fabAdd.addEventListener('click', () => {
-            resetModal();
-            modal.style.display = 'flex';
-            toggleFormFields();
-        });
-        closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
-        window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
 
         saveBtn.addEventListener('click', async () => {
             const type = document.getElementById('typeSelect').value;
@@ -872,16 +1539,21 @@
             if (!currentUser) return;
 
             saveBtn.disabled = true;
-            saveBtn.innerHTML = '<i class="ri-loader-4-line spin"></i> SAVING';
+            saveBtn.innerHTML = '<i class="ri-loader-4-line"></i> SAVING';
 
             try {
+                const tags = document.getElementById('inpTags').value.split(',').map(t => t.trim()).filter(t => t);
                 let payload = {
                     title,
                     type,
+                    category: document.getElementById('inpCategory').value,
+                    tags,
+                    favorite: document.getElementById('inpFavorite').checked,
                     isDeleted: false,
-                    createdAt: serverTimestamp(),
+                    editedAt: serverTimestamp(),
                     userId: currentUser.uid
                 };
+                if (!editingId) payload.createdAt = serverTimestamp();
 
                 if (type === 'note') {
                     payload.content = document.getElementById('inpContent').value;
@@ -889,12 +1561,11 @@
                     payload.username = document.getElementById('inpUser').value;
                     payload.password = document.getElementById('inpPass').value;
                 } else if (type === 'image') {
-                    const file = document.getElementById('inpFile').files[0];
-                    if (file) {
-                        const storageRef = ref(storage, `users/${currentUser.uid}/${Date.now()}_${file.name}`);
-                        await uploadBytes(storageRef, file);
-                        payload.imageUrl = await getDownloadURL(storageRef);
-                    } else if (!editingId) throw new Error('File required');
+                    let imageUrl = document.getElementById('inpImageUrl').value.trim();
+                    if (!imageUrl && !editingId) {
+                        throw new Error('Please provide an image URL or use the uploader');
+                    }
+                    payload.imageUrl = imageUrl;
                 }
 
                 if (editingId) {
@@ -904,6 +1575,7 @@
                     await addDoc(collection(db, "necxy_items"), payload);
                     showToast('Saved');
                 }
+
                 modal.style.display = 'none';
                 resetModal();
             } catch (err) {
@@ -914,24 +1586,33 @@
             }
         });
 
-        // Auth state observer
-        onAuthStateChanged(auth, (user) => {
+        closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
+        window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+        // Auth state
+        onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             if (user) {
-                userArea.innerHTML = `<img src="${user.photoURL || 'https://i.pravatar.cc/100'}" class="avatar"><button id="logoutBtn" style="background:rgba(255,255,255,0.05); border:none; color:white; padding:8px 16px; border-radius:30px;">Sign out</button>`;
-                document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
-                renderApp();
-                fabAdd.style.display = 'flex';
+                // Fetch user profile
+                const q = query(collection(db, "users"), where("uid", "==", user.uid));
+                const querySnap = await getDocs(q);
+                if (!querySnap.empty) {
+                    userProfile = querySnap.docs[0].data();
+                    popupNickname.textContent = userProfile.nickname || '-';
+                    popupRealname.textContent = userProfile.realname || '-';
+                    popupEmail.textContent = user.email;
+                } else {
+                    popupNickname.textContent = '-';
+                    popupRealname.textContent = '-';
+                    popupEmail.textContent = user.email;
+                }
+                renderVault();
             } else {
-                userArea.innerHTML = '<div id="authBtn"><i class="ri-google-fill"></i> <span>Sign in</span></div>';
-                document.getElementById('authBtn').addEventListener('click', () => signInWithPopup(auth, provider));
-                renderAuthGate();
-                fabAdd.style.display = 'none';
+                userProfile = null;
+                renderAuthUI();
                 if (unsubscribeItems) unsubscribeItems();
             }
         });
-
-        window.toggleFormFields = toggleFormFields; // expose
     </script>
 </body>
 </html>
