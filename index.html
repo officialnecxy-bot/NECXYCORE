@@ -1,1618 +1,1388 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NECXYCORE · OBSIDIAN</title>
+    <title>NECXYCORE · sleek vault</title>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { 
+                        primary: '#FF003C', 
+                        glass: '#0a0a0a',
+                        dark: '#000000',
+                        card: '#0c0c0c',
+                        accent: '#22C55E',
+                        social: '#833ab4',
+                        ott: '#ff5e62',
+                        vpn: '#2193b0',
+                        notes: '#654ea3',
+                        used: '#FFA500'
+                    },
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    animation: { 
+                        'fade-in': 'fadeIn 0.3s ease-out', 
+                        'pop-up': 'popUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)', 
+                        'slide-down': 'slideDown 0.3s ease-out', 
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        popUp: { '0%': { transform: 'scale(0.95) translateY(20px)', opacity: '0' }, '100%': { transform: 'scale(1) translateY(0)', opacity: '1' } },
+                        slideDown: { '0%': { transform: 'translateY(-20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        float: { '0%, 100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-10px)' } },
+                        glow: { '0%': { boxShadow: '0 0 10px rgba(255,0,60,0.3)' }, '100%': { boxShadow: '0 0 20px rgba(255,0,60,0.6)' } },
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet"/>
-
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-dark: #0a0a0f;
-            --surface-glass: rgba(20, 20, 30, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.05);
-            --glass-border-hover: rgba(255, 26, 76, 0.3);
-            --neon-red: #ff1a4c;
-            --red-glow: 0 0 15px rgba(255, 26, 76, 0.5);
-            --text-light: #ffffff;
-            --text-muted: #a0a0b0;
-            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            --blur-amount: blur(16px);
-            --transition-smooth: all 0.25s cubic-bezier(0.2, 0, 0, 1);
-            --safe-bottom: env(safe-area-inset-bottom);
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            font-family: var(--font-sans);
-            min-height: 100vh;
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
+        body { 
+            background-color: #000000; 
+            color: white; 
+            font-family: 'Outfit', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
             position: relative;
             overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        /* Animated background orbs */
-        .bg-orbs {
+        /* Auth screen */
+        #auth-screen { 
+            position: fixed; 
+            inset: 0; 
+            z-index: 999; 
+            background: #000;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px; 
+        }
+        .app-layout { 
+            padding-top: 140px; 
+            padding-bottom: 30px; 
+            position: relative; 
+            z-index: 1; 
+            display: none; 
+        }
+        
+        /* Premium Glass Effect - refined */
+        .glass-panel { 
+            background: rgba(12, 12, 12, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Header capsule */
+        .header-capsule {
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-radius: 60px;
+            padding: 10px 20px;
+            margin: 12px 16px;
+            width: calc(100% - 32px);
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            overflow: hidden;
-        }
-        .bg-orbs span {
-            position: absolute;
-            width: 30vmax;
-            height: 30vmax;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(255, 26, 76, 0.15), transparent 70%);
-            animation: float 20s infinite ease-in-out;
-        }
-        .bg-orbs span:nth-child(1) { top: 10%; left: 10%; animation-duration: 25s; }
-        .bg-orbs span:nth-child(2) { bottom: 15%; right: 10%; width: 40vmax; height: 40vmax; background: radial-gradient(circle at 70% 70%, rgba(200, 0, 50, 0.1), transparent 80%); animation-duration: 30s; }
-        .bg-orbs span:nth-child(3) { top: 40%; left: 60%; width: 25vmax; height: 25vmax; background: radial-gradient(circle at 40% 40%, rgba(255, 80, 120, 0.1), transparent 70%); animation-duration: 22s; }
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(2%, 3%) scale(1.05); }
-            66% { transform: translate(-2%, 1%) scale(0.95); }
-            100% { transform: translate(0, 0) scale(1); }
-        }
-
-        /* Glass base */
-        .glass {
-            background: var(--surface-glass);
-            backdrop-filter: var(--blur-amount);
-            -webkit-backdrop-filter: var(--blur-amount);
-            border: 1px solid var(--glass-border);
-            border-radius: 28px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            transition: var(--transition-smooth);
-        }
-        .glass:hover {
-            border-color: var(--glass-border-hover);
-            box-shadow: 0 20px 40px rgba(255, 26, 76, 0.2);
-        }
-
-        /* Premium Capsule Header — icon removed as requested */
-        .vault-header {
-            margin: 16px 5%;
-            padding: 8px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(20, 20, 30, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 60px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            position: sticky;
-            top: 10px;
             z-index: 50;
-        }
-
-        .logo {
-            font-weight: 800;
-            font-size: 1.5rem;
-            letter-spacing: -0.02em;
-            background: linear-gradient(120deg, #fff, #ffb0b0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             display: flex;
-            align-items: center;
-            gap: 6px;
-            padding-left: 8px;
-        }
-        /* icon removed from .logo i — now only text */
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .header-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            backdrop-filter: blur(10px);
-        }
-        .header-icon:hover {
-            background: var(--neon-red);
-            border-color: var(--neon-red);
-            box-shadow: var(--red-glow);
-        }
-
-        /* Popup menu (for user) */
-        .popup-menu {
-            position: absolute;
-            top: 70px;
-            right: 20px;
-            background: rgba(20, 20, 30, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 20px;
-            min-width: 260px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-            display: none;
-            z-index: 100;
-            animation: popIn 0.2s ease;
-        }
-        @keyframes popIn {
-            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        .popup-menu.show { display: block; }
-        .popup-item {
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            color: var(--text-muted);
-        }
-        .popup-item strong {
-            color: var(--text-light);
-            display: block;
-            font-size: 1rem;
-            margin-bottom: 4px;
-        }
-        .popup-item span {
-            font-size: 0.9rem;
-        }
-        .logout-btn {
-            background: rgba(255, 26, 76, 0.2);
-            border: 1px solid var(--neon-red);
-            color: white;
-            padding: 12px;
-            border-radius: 40px;
-            font-weight: 600;
-            width: 100%;
-            margin-top: 16px;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-        }
-        .logout-btn:hover {
-            background: var(--neon-red);
-        }
-
-        /* Image host popup — now centered exactly as requested */
-        .image-host-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 340px;
-            background: rgba(20, 20, 30, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-            display: none;
-            z-index: 200; /* higher than header */
-            animation: popIn 0.2s ease;
-        }
-        .image-host-popup.show { display: block; }
-        .image-host-popup h3 {
-            margin-bottom: 16px;
-            font-size: 1.2rem;
-        }
-        .upload-area {
-            border: 2px dashed rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 16px;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-        }
-        .upload-area:hover {
-            border-color: var(--neon-red);
-            background: rgba(255, 26, 76, 0.05);
-        }
-        .upload-area i {
-            font-size: 2.5rem;
-            color: var(--text-muted);
-        }
-        #hostFileInput {
-            display: none;
-        }
-        .upload-btn {
-            background: var(--neon-red);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 40px;
-            font-weight: 600;
-            width: 100%;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            margin-bottom: 16px;
-        }
-        .upload-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .link-display {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 30px;
-            padding: 10px 16px;
-            display: flex;
-            align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
-            word-break: break-all;
-        }
-        .link-display span {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-        .copy-link-btn {
-            background: none;
-            border: none;
-            color: var(--neon-red);
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-
-        .history-title {
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-        .history-list {
-            max-height: 120px;
-            overflow-y: auto;
-        }
-        .history-item {
-            display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .history-item span {
-            font-size: 0.8rem;
-            color: var(--text-light);
-            cursor: pointer;
-            flex: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .history-item button {
-            background: none;
-            border: none;
-            color: var(--neon-red);
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        /* Auth Container */
-        .auth-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 80vh;
-            padding: 20px;
-        }
-
-        .auth-card {
-            background: rgba(20, 20, 30, 0.7);
-            backdrop-filter: var(--blur-amount);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 48px;
-            padding: 32px 24px;
-            width: 100%;
-            max-width: 440px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
-            animation: fadeUp 0.4s ease;
-        }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .auth-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 28px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 6px;
-            border-radius: 50px;
-        }
-        .auth-tab {
-            flex: 1;
-            text-align: center;
-            padding: 12px;
-            border-radius: 40px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            color: var(--text-muted);
-        }
-        .auth-tab.active {
-            background: var(--neon-red);
-            color: white;
-            box-shadow: var(--red-glow);
-        }
-
-        .auth-form { display: none; }
-        .auth-form.active { display: block; }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-            font-weight: 500;
-            font-size: 0.85rem;
-        }
-
-        .input-glass {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            padding: 16px 20px;
-            color: var(--text-light);
-            font-size: 1rem;
-            outline: none;
-            transition: var(--transition-smooth);
-            backdrop-filter: blur(10px);
-        }
-        .input-glass:focus {
-            border-color: var(--neon-red);
-            box-shadow: 0 0 0 3px rgba(255, 26, 76, 0.2);
-        }
-
-        .btn-primary {
-            background: var(--neon-red);
-            border: none;
-            color: white;
-            font-weight: 700;
-            padding: 16px;
-            border-radius: 50px;
-            width: 100%;
-            font-size: 1rem;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(255, 26, 76, 0.4);
-            transition: var(--transition-smooth);
-            margin-top: 10px;
-        }
-        .btn-primary:active { transform: scale(0.97); }
-
-        .auth-footer {
-            text-align: center;
-            margin-top: 20px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-        .auth-footer span {
-            color: var(--neon-red);
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        /* Main App */
-        .app-container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 20px 20px;
-        }
-
-        /* Premium Search Bar with integrated add */
-        .search-section {
-            margin-bottom: 24px;
-            animation: slideDown 0.3s ease;
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .search-wrapper {
-            position: relative;
-            width: 100%;
-        }
-        .search-wrapper input {
-            width: 100%;
-            background: rgba(20, 20, 30, 0.7);
-            backdrop-filter: var(--blur-amount);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 60px;
-            padding: 18px 70px 18px 24px;
-            color: var(--text-light);
-            font-size: 1rem;
-            outline: none;
-            transition: var(--transition-smooth);
-        }
-        .search-wrapper input:focus {
-            border-color: var(--neon-red);
-            box-shadow: 0 0 0 3px rgba(255, 26, 76, 0.2);
-        }
-        .search-add-btn {
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: var(--neon-red);
-            border: none;
-            color: white;
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 6px 15px rgba(255, 26, 76, 0.4);
-            transition: var(--transition-smooth);
-        }
-        .search-add-btn:active { transform: translateY(-50%) scale(0.9); }
-
-        /* Filter bar - all in one line */
+        
+        /* Category filter bar */
         .filter-bar {
             display: flex;
-            flex-wrap: wrap;
-            align-items: center;
             gap: 10px;
-            margin-bottom: 24px;
-            background: rgba(20, 20, 30, 0.5);
-            backdrop-filter: blur(12px);
+            overflow-x: auto;
             padding: 8px 16px;
-            border-radius: 60px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            animation: fadeIn 0.4s ease;
-        }
-        .filter-chip {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            color: var(--text-muted);
-            padding: 8px 16px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            white-space: nowrap;
-            backdrop-filter: blur(4px);
-        }
-        .filter-chip.active {
-            background: var(--neon-red);
-            color: white;
-            border-color: var(--neon-red);
-            box-shadow: var(--red-glow);
-        }
-        .filter-chip:active { transform: scale(0.95); }
-
-        .filter-select {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 40px;
-            padding: 8px 16px;
-            color: var(--text-light);
-            font-weight: 600;
-            font-size: 0.85rem;
-            outline: none;
-            cursor: pointer;
-            backdrop-filter: blur(4px);
-            min-width: 140px;
-        }
-
-        /* Two-state toggle for active/trash */
-        .view-toggle {
-            display: flex;
-            gap: 6px;
-            margin-left: auto;
-        }
-        .view-toggle .filter-chip {
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        /* Masonry Grid */
-        .masonry-grid {
-            column-count: 3;
-            column-gap: 20px;
-        }
-        @media (max-width: 900px) { .masonry-grid { column-count: 2; } }
-        @media (max-width: 600px) { .masonry-grid { column-count: 1; } }
-
-        .vault-card {
-            break-inside: avoid;
-            background: rgba(20, 20, 30, 0.7);
-            backdrop-filter: var(--blur-amount);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 28px;
-            padding: 22px;
-            margin-bottom: 20px;
-            transition: var(--transition-smooth);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            animation: cardAppear 0.3s ease;
-        }
-        @keyframes cardAppear {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .vault-card:hover {
-            border-color: var(--neon-red);
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(255, 26, 76, 0.2);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            margin-bottom: 14px;
-        }
-        .type-badge {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 30px;
-            padding: 4px 12px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .favorite-star {
-            font-size: 1.2rem;
-            cursor: pointer;
-            color: #ffb347;
-            transition: var(--transition-smooth);
-        }
-        .favorite-star.inactive { color: #444; }
-        .favorite-star.inactive:hover { color: #666; }
-        .card-actions {
-            display: flex;
-            gap: 4px;
-        }
-        .icon-btn {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            color: var(--text-muted);
-            width: 34px;
-            height: 34px;
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-        }
-        .icon-btn:hover {
-            background: var(--neon-red);
-            color: white;
-            border-color: var(--neon-red);
-        }
-
-        .card-title {
-            font-weight: 700;
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-            color: var(--text-light);
-        }
-        .content-block {
-            color: #ccc;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 14px;
-            word-break: break-word;
-        }
-        .cred-line {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 8px 12px;
-            border-radius: 30px;
-            margin-bottom: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .blur-hidden {
-            filter: blur(4px);
-            transition: var(--transition-smooth);
-            cursor: pointer;
-        }
-        .blur-hidden:hover { filter: blur(0); }
-
-        .image-thumb {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .image-thumb:hover { opacity: 0.9; }
-
-        .tag-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin: 12px 0;
-        }
-        .tag {
-            background: rgba(255, 26, 76, 0.15);
-            border: 1px solid rgba(255, 26, 76, 0.3);
-            border-radius: 20px;
-            padding: 4px 12px;
-            font-size: 0.7rem;
-            color: #ffb0b0;
-            font-weight: 600;
-        }
-
-        .meta-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 16px;
-            padding-top: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            color: var(--text-muted);
-            font-size: 0.7rem;
-        }
-
-        /* Lightbox */
-        .lightbox-overlay {
+            margin-top: 80px;
             position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(12px);
-            z-index: 300;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .lightbox-content {
-            max-width: 90vw;
-            max-height: 90vh;
-            position: relative;
-        }
-        .lightbox-content img {
-            max-width: 100%;
-            max-height: 80vh;
-            border-radius: 24px;
-            border: 2px solid var(--neon-red);
-        }
-        .lightbox-close {
-            position: absolute;
-            top: -40px;
+            top: 0;
+            left: 0;
             right: 0;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 2.5rem;
-            cursor: pointer;
+            z-index: 45;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .download-btn {
-            position: absolute;
-            bottom: -50px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--neon-red);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: var(--red-glow);
+        .filter-btn {
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            background: rgba(20,20,20,0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #aaa;
+            transition: all 0.2s;
         }
-
-        /* Modal */
-        .modal-overlay {
+        .filter-btn.active {
+            background: linear-gradient(135deg, #FF003C 0%, #CC002F 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(255,0,60,0.4);
+        }
+        
+        /* Search bar */
+        .search-bar {
             position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(12px);
-            z-index: 200;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-            animation: fadeIn 0.2s;
-        }
-        .modal-card {
-            background: rgba(25, 25, 35, 0.95);
-            backdrop-filter: blur(30px);
-            border: 1px solid var(--neon-red);
-            border-radius: 48px;
-            max-width: 520px;
-            width: 100%;
-            padding: 32px 24px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 30px 60px rgba(255, 26, 76, 0.3);
-            animation: modalPop 0.3s ease;
-        }
-        @keyframes modalPop {
-            from { opacity: 0; transform: scale(0.95) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        .close-modal {
-            position: absolute;
-            top: 20px; right: 20px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 2rem;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-        }
-        .close-modal:hover { color: var(--neon-red); }
-
-        .checkbox-wrapper {
+            top: 130px;
+            left: 16px;
+            right: 16px;
+            z-index: 44;
+            background: rgba(10,10,10,0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50px;
+            padding: 8px 16px;
             display: flex;
             align-items: center;
             gap: 10px;
-            margin: 16px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
-        .checkbox-wrapper input {
-            width: 22px;
-            height: 22px;
-            accent-color: var(--neon-red);
+        .search-bar i {
+            color: #666;
+        }
+        .search-bar input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            width: 100%;
+        }
+        .search-bar input::placeholder {
+            color: #444;
+            font-weight: 400;
+        }
+        
+        /* Note card - refined */
+        .note-card { 
+            background: linear-gradient(145deg, #0c0c0c 0%, #080808 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); 
+            position: relative; 
+            overflow: hidden; 
+            transition: all 0.3s ease;
+        }
+        .note-card:hover { 
+            transform: translateY(-4px); 
+            border-color: rgba(255, 0, 60, 0.3); 
+            box-shadow: 0 15px 40px rgba(255, 0, 60, 0.2);
+        }
+        .note-card:active { transform: translateY(0) scale(0.98); border-color: #FF003C; }
+        
+        .big-modal { 
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9), 0 0 50px rgba(255, 0, 60, 0.2); 
+            width: 100%; 
+            max-width: 420px; 
+            border-radius: 32px; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            max-height: 85vh; 
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #FF003C 0%, #CC002F 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 5px 20px rgba(255, 0, 60, 0.4), 0 0 15px rgba(255, 0, 60, 0.2);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            border-radius: 16px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 0, 60, 0.5), 0 0 20px rgba(255, 0, 60, 0.3);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .category-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .used-badge {
+            background: rgba(255,165,0,0.15);
+            border: 1px solid rgba(255,165,0,0.3);
+            color: #FFA500;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #FF003C 0%, #22C55E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        /* Toast */
-        .toast {
+        .fab {
             position: fixed;
             bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) scale(0.9);
-            background: rgba(20, 20, 30, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--neon-red);
-            padding: 12px 28px;
-            border-radius: 60px;
-            color: var(--text-light);
-            font-weight: 600;
-            box-shadow: 0 15px 30px rgba(255, 26, 76, 0.3);
-            opacity: 0;
-            transition: 0.2s;
-            z-index: 999;
-            pointer-events: none;
-            white-space: nowrap;
-        }
-        .toast.show { opacity: 1; transform: translateX(-50%) scale(1); }
-
-        /* Loader */
-        .loader-wrapper {
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #FF003C, #CC002F);
+            box-shadow: 0 10px 30px rgba(255,0,60,0.5);
             display: flex;
+            align-items: center;
             justify-content: center;
-            padding: 40px;
+            font-size: 24px;
+            color: white;
+            z-index: 40;
+            transition: all 0.2s;
+            border: 1px solid rgba(255,255,255,0.2);
         }
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255, 26, 76, 0.2);
-            border-top-color: var(--neon-red);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .fab:hover { transform: scale(1.1); }
+        .fab:active { transform: scale(0.95); }
 
-        /* Responsive fine-tuning */
-        @media (max-width: 700px) {
-            .filter-bar { border-radius: 30px; padding: 8px 12px; }
-            .view-toggle { margin-left: 0; width: 100%; justify-content: flex-end; }
+        .copy-btn, .eye-btn, .delete-history-btn {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            transition: color 0.2s;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
         }
-        @media (max-width: 480px) {
-            .filter-chip, .filter-select { padding: 6px 12px; font-size: 0.8rem; }
-            .header-icon { width: 40px; height: 40px; font-size: 1.2rem; }
+        .copy-btn:hover, .eye-btn:hover { color: #FF003C; background: rgba(255,0,60,0.1); }
+        .delete-history-btn:hover { color: #ff4444; background: rgba(255,0,0,0.1); }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .loader { width: 18px; height: 18px; border: 2px solid #FFF; border-bottom-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; display: inline-block; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* field row */
+        .field-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(20,20,20,0.5);
+            padding: 12px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 10px;
         }
+        .field-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #888;
+            width: 70px;
+        }
+        .field-value {
+            font-family: monospace;
+            font-size: 13px;
+            font-weight: 500;
+            color: white;
+            word-break: break-word;
+            flex: 1;
+            padding: 0 8px;
+        }
+        .password-value {
+            font-family: monospace;
+            font-size: 13px;
+            font-weight: 500;
+            color: white;
+            flex: 1;
+        }
+        /* toggle switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            margin-left: 8px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #333;
+            transition: .3s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #FF003C;
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        /* auth tabs */
+        .tab-active { 
+            background: linear-gradient(135deg, #FF003C 0%, #CC002F 100%); 
+            color: white; 
+            border: none; 
+            box-shadow: 0 4px 15px rgba(255,0,60,0.4); 
+        }
+        .tab-inactive { 
+            background: rgba(21, 21, 21, 0.8); 
+            color: #888; 
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Custom dropdown */
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+        }
+        .dropdown-selected {
+            background: rgba(20,20,20,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+        .dropdown-selected:hover {
+            border-color: rgba(255,0,60,0.5);
+            background: rgba(30,30,30,0.9);
+        }
+        .dropdown-selected span {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .dropdown-selected i {
+            font-size: 16px;
+            color: var(--cat-color);
+        }
+        .dropdown-options {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: rgba(15,15,15,0.95);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            z-index: 60;
+            display: none;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+        .dropdown-options.show {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+        .dropdown-option {
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .dropdown-option:last-child {
+            border-bottom: none;
+        }
+        .dropdown-option:hover {
+            background: rgba(255,0,60,0.15);
+        }
+        .dropdown-option i {
+            font-size: 16px;
+            width: 24px;
+            text-align: center;
+        }
+        .dropdown-option.selected {
+            background: rgba(255,0,60,0.2);
+            color: white;
+        }
+        .cat-social { color: #833ab4; }
+        .cat-ott { color: #ff5e62; }
+        .cat-vpn { color: #2193b0; }
+        .cat-notes { color: #654ea3; }
     </style>
 </head>
 <body>
-    <!-- Animated background orbs -->
-    <div class="bg-orbs">
-        <span></span><span></span><span></span>
-    </div>
 
-    <header class="vault-header">
-        <div class="logo">
-            <!-- Icon removed as requested -->
-            NECXYCORE
-        </div>
-        <div class="header-actions">
-            <div class="header-icon" id="imageHostIcon"><i class="ri-image-add-line"></i></div>
-            <div class="header-icon" id="userIcon"><i class="ri-user-line"></i></div>
-        </div>
+    <!-- Toast Area -->
+    <div id="toast-area" class="fixed top-24 left-0 right-0 z-[200] flex flex-col items-center gap-3 pointer-events-none px-4"></div>
 
-        <!-- User popup -->
-        <div class="popup-menu" id="userPopup">
-            <div class="popup-item">
-                <strong>Nickname</strong>
-                <span id="popupNickname">-</span>
+    <!-- Auth Screen -->
+    <div id="auth-screen">
+        <div class="w-full max-w-sm">
+            <div class="text-center mb-10 animate-fade-in">
+                <div class="relative mb-6">
+                    <div class="absolute inset-0 bg-primary/20 blur-[50px] rounded-full animate-pulse-slow"></div>
+                    <h1 class="text-5xl font-black tracking-tighter leading-none mb-2 relative z-10">
+                        <span class="text-primary drop-shadow-[0_0_15px_rgba(255,0,60,0.6)]">NECXY</span>
+                        <span class="text-white">CORE</span>
+                    </h1>
+                </div>
+                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-[4px] animate-slide-down">secure vault access</p>
             </div>
-            <div class="popup-item">
-                <strong>Real Name</strong>
-                <span id="popupRealname">-</span>
-            </div>
-            <div class="popup-item">
-                <strong>Email</strong>
-                <span id="popupEmail">-</span>
-            </div>
-            <button class="logout-btn" id="popupLogout">Sign out</button>
-        </div>
-
-        <!-- Image host popup - now centered -->
-        <div class="image-host-popup" id="imageHostPopup">
-            <h3>Upload to ImgBB</h3>
-            <div class="upload-area" id="uploadArea">
-                <i class="ri-upload-cloud-line"></i>
-                <p style="margin-top:8px;">Click or drag image</p>
-            </div>
-            <input type="file" id="hostFileInput" accept="image/*">
-            <button class="upload-btn" id="uploadHostBtn" disabled>Upload</button>
-            
-            <div id="uploadedLinkContainer" style="display: none;">
-                <div class="link-display">
-                    <span id="uploadedLink"></span>
-                    <button class="copy-link-btn" id="copyLinkBtn"><i class="ri-file-copy-line"></i></button>
+            <div class="glass-panel p-8 rounded-[35px] shadow-2xl relative overflow-hidden animate-pop-up">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[50px] animate-float"></div>
+                <div class="flex bg-black/50 p-1 rounded-xl mb-6 border border-white/5">
+                    <button onclick="toggleAuth('login')" id="tab-login" class="tab-btn flex-1 py-3 rounded-lg text-xs font-black uppercase transition-all tab-active">Login</button>
+                    <button onclick="toggleAuth('signup')" id="tab-signup" class="tab-btn flex-1 py-3 rounded-lg text-xs font-black uppercase transition-all tab-inactive">Sign Up</button>
+                </div>
+                <div id="form-container">
+                    <div id="input-name-group" class="mb-4 hidden animate-fade-in">
+                        <label class="text-[9px] font-bold text-gray-500 uppercase ml-2 mb-1 block">Name</label>
+                        <div class="bg-black/30 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3 focus-within:border-primary">
+                            <i class="fa-regular fa-user text-gray-500 text-sm"></i>
+                            <input type="text" id="auth-name" placeholder="Your name" class="bg-transparent w-full text-sm font-bold text-white outline-none">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="text-[9px] font-bold text-gray-500 uppercase ml-2 mb-1 block">Email</label>
+                        <div class="bg-black/30 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3 focus-within:border-primary">
+                            <i class="fa-regular fa-envelope text-gray-500 text-sm"></i>
+                            <input type="email" id="auth-email" placeholder="email@example.com" class="bg-transparent w-full text-sm font-bold text-white outline-none">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="text-[9px] font-bold text-gray-500 uppercase ml-2 mb-1 block">Password</label>
+                        <div class="bg-black/30 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3 focus-within:border-primary">
+                            <i class="fa-regular fa-lock text-gray-500 text-sm"></i>
+                            <input type="password" id="auth-pass" placeholder="••••••••" class="bg-transparent w-full text-sm font-bold text-white outline-none">
+                        </div>
+                    </div>
+                    <div id="confirm-pass-group" class="mb-8 hidden">
+                        <label class="text-[9px] font-bold text-gray-500 uppercase ml-2 mb-1 block">Confirm Password</label>
+                        <div class="bg-black/30 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3 focus-within:border-primary">
+                            <i class="fa-regular fa-lock text-gray-500 text-sm"></i>
+                            <input type="password" id="auth-confirm" placeholder="••••••••" class="bg-transparent w-full text-sm font-bold text-white outline-none">
+                        </div>
+                    </div>
+                    <button id="btn-auth-action" onclick="handleAuth()" class="w-full btn-primary text-white py-4 rounded-xl font-black uppercase text-xs tracking-[3px] active:scale-95 transition-all">Enter vault</button>
                 </div>
             </div>
-
-            <div class="history-title">Recent uploads</div>
-            <div class="history-list" id="historyList"></div>
-            <div id="uploadStatus" style="font-size:0.85rem; color:var(--text-muted); text-align:center; margin-top:8px;"></div>
-        </div>
-    </header>
-
-    <div id="mainContent"></div>
-
-    <!-- Modal for add/edit -->
-    <div class="modal-overlay" id="itemModal">
-        <div class="modal-card" style="position:relative;">
-            <button class="close-modal" id="closeModalBtn"><i class="ri-close-line"></i></button>
-            <h2 id="modalTitle" style="margin-bottom:24px; font-weight:700;">ENCRYPT NEW</h2>
-            
-            <div class="form-group">
-                <label>Type</label>
-                <select id="typeSelect" class="input-glass" onchange="toggleFormFields()">
-                    <option value="note">Secure Note</option>
-                    <option value="account">Credential</option>
-                    <option value="image">Image</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Title</label>
-                <input type="text" id="inpTitle" class="input-glass" placeholder="e.g. Server X">
-            </div>
-
-            <div id="field-note" class="form-group">
-                <label>Content</label>
-                <textarea id="inpContent" class="input-glass" rows="4"></textarea>
-            </div>
-
-            <div id="field-account" class="form-group" style="display:none;">
-                <input type="text" id="inpUser" class="input-glass" placeholder="Username" style="margin-bottom:10px;">
-                <input type="text" id="inpPass" class="input-glass" placeholder="Password">
-            </div>
-
-            <div id="field-image" class="form-group" style="display:none;">
-                <label>Image URL (or use uploader)</label>
-                <input type="text" id="inpImageUrl" class="input-glass" placeholder="https://...">
-                <p style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">You can also use the image host icon to upload.</p>
-            </div>
-
-            <div class="form-group">
-                <label>Category</label>
-                <select id="inpCategory" class="input-glass">
-                    <option value="Personal">Personal</option>
-                    <option value="Work">Work</option>
-                    <option value="Finance">Finance</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Tags (comma separated)</label>
-                <input type="text" id="inpTags" class="input-glass" placeholder="e.g. secret, urgent">
-            </div>
-
-            <div class="checkbox-wrapper">
-                <input type="checkbox" id="inpFavorite">
-                <label for="inpFavorite">Mark as favorite</label>
-            </div>
-
-            <button class="btn-primary" id="saveBtn">SAVE TO VAULT</button>
         </div>
     </div>
 
-    <!-- Lightbox for images -->
-    <div class="lightbox-overlay" id="lightbox">
-        <div class="lightbox-content">
-            <button class="lightbox-close" id="lightboxClose"><i class="ri-close-line"></i></button>
-            <img id="lightboxImg" src="" alt="">
-            <a id="downloadLink" href="#" download target="_blank"><button class="download-btn"><i class="ri-download-line"></i> Download</button></a>
+    <!-- Main App -->
+    <div id="main-app" class="app-layout">
+        <!-- Glassmorphism Header Capsule with item count -->
+        <div class="header-capsule">
+            <div class="flex items-center gap-3">
+                <h1 class="text-xl font-black tracking-tighter">
+                    <span class="text-primary">NECXY</span><span class="text-white">CORE</span>
+                </h1>
+                <span id="note-count" class="text-[10px] font-bold bg-primary/20 px-3 py-1 rounded-full border border-primary/30">0</span>
+            </div>
+            <button onclick="openProfileModal()" class="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center border border-white/10 hover:scale-105 transition">
+                <i class="fa-regular fa-user text-primary"></i>
+            </button>
         </div>
-    </div>
 
-    <div id="toastMsg" class="toast">Copied</div>
+        <!-- Category Filter Bar -->
+        <div class="filter-bar no-scrollbar">
+            <button class="filter-btn active" data-filter="all" onclick="filterNotes('all', this)">All</button>
+            <button class="filter-btn" data-filter="social" onclick="filterNotes('social', this)">Social</button>
+            <button class="filter-btn" data-filter="ott" onclick="filterNotes('ott', this)">OTT</button>
+            <button class="filter-btn" data-filter="vpn" onclick="filterNotes('vpn', this)">VPN</button>
+            <button class="filter-btn" data-filter="notes" onclick="filterNotes('notes', this)">Notes</button>
+        </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, where, onSnapshot, updateDoc, doc, serverTimestamp, orderBy, deleteDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="search-input" placeholder="Search by title, tag, content..." oninput="performSearch()">
+            <button onclick="clearSearch()" class="text-gray-500 hover:text-white"><i class="fa-solid fa-times"></i></button>
+        </div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyC6Uf7Ouu-8EgbioqBw3c-ZXX_sPVd3uMQ",
-            authDomain: "ncgames0fficial.firebaseapp.com",
-            databaseURL: "https://ncgames0fficial-default-rtdb.firebaseio.com",
-            projectId: "ncgames0fficial",
-            storageBucket: "ncgames0fficial.firebasestorage.app",
-            messagingSenderId: "14249987525",
-            appId: "1:14249987525:web:6de85034f4b7302cc8cfac"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const storage = getStorage(app);
-        const auth = getAuth(app);
-
-        // ImgBB API key
-        const IMGBB_KEY = "300f9a18eade085d9e0227a7f2d56574";
-
-        let currentUser = null;
-        let unsubscribeItems = null;
-        let editingId = null;
-        let currentFilterType = 'all';
-        let isTrashMode = false;
-        let currentCategoryFilter = 'all';
-        let showFavoritesOnly = false;
-        let userProfile = null;
-
-        const mainContent = document.getElementById('mainContent');
-        const modal = document.getElementById('itemModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const saveBtn = document.getElementById('saveBtn');
-        const toast = document.getElementById('toastMsg');
-
-        // Header elements
-        const userIcon = document.getElementById('userIcon');
-        const userPopup = document.getElementById('userPopup');
-        const imageHostIcon = document.getElementById('imageHostIcon');
-        const imageHostPopup = document.getElementById('imageHostPopup');
-        const popupNickname = document.getElementById('popupNickname');
-        const popupRealname = document.getElementById('popupRealname');
-        const popupEmail = document.getElementById('popupEmail');
-        const popupLogout = document.getElementById('popupLogout');
-        const uploadArea = document.getElementById('uploadArea');
-        const hostFileInput = document.getElementById('hostFileInput');
-        const uploadHostBtn = document.getElementById('uploadHostBtn');
-        const uploadStatus = document.getElementById('uploadStatus');
-        const uploadedLinkContainer = document.getElementById('uploadedLinkContainer');
-        const uploadedLinkSpan = document.getElementById('uploadedLink');
-        const copyLinkBtn = document.getElementById('copyLinkBtn');
-        const historyList = document.getElementById('historyList');
-
-        // Lightbox
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightboxImg');
-        const lightboxClose = document.getElementById('lightboxClose');
-        const downloadLink = document.getElementById('downloadLink');
-
-        // Image upload history (localStorage)
-        let uploadHistory = JSON.parse(localStorage.getItem('imgbb_history')) || [];
-
-        function saveHistory(url) {
-            uploadHistory = [url, ...uploadHistory.filter(u => u !== url)].slice(0, 5);
-            localStorage.setItem('imgbb_history', JSON.stringify(uploadHistory));
-            renderHistory();
-        }
-
-        function renderHistory() {
-            historyList.innerHTML = uploadHistory.map(url => `
-                <div class="history-item">
-                    <span onclick="useHistoryUrl('${url}')">${url}</span>
-                    <button onclick="copyHistoryUrl('${url}')"><i class="ri-file-copy-line"></i></button>
+        <!-- Main Content: Notes Grid -->
+        <section id="page-home" class="px-4 pt-28 animate-fade-in block">
+            <div id="notes-grid" class="grid grid-cols-1 gap-4 pb-24">
+                <!-- cards will be injected here -->
+                <div class="text-center py-20 opacity-60">
+                    <i class="fa-regular fa-pen-to-square text-5xl text-white/20 mb-3"></i>
+                    <p class="text-gray-500 text-sm font-bold uppercase tracking-widest">no entries yet</p>
+                    <p class="text-gray-600 text-[10px] mt-1">tap the + to add one</p>
                 </div>
-            `).join('');
-        }
+            </div>
+        </section>
 
-        window.useHistoryUrl = (url) => {
-            imageHostPopup.classList.remove('show');
-            resetModal();
-            document.getElementById('typeSelect').value = 'image';
-            toggleFormFields();
-            document.getElementById('inpImageUrl').value = url;
-            modal.style.display = 'flex';
-        };
+        <!-- Floating Action Button -->
+        <button onclick="openAddModal()" class="fab">
+            <i class="fa-solid fa-plus"></i>
+        </button>
+    </div>
 
-        window.copyHistoryUrl = (url) => {
-            navigator.clipboard.writeText(url).then(() => showToast('Link copied!'));
-        };
+    <!-- ADD / EDIT NOTE MODAL with custom dropdown -->
+    <div id="modal-add-note" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-xl" onclick="closeAddModal()"></div>
+        <div class="big-modal relative z-10 animate-pop-up p-6">
+            <button onclick="closeAddModal()" class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70"><i class="fa-solid fa-xmark"></i></button>
+            <h2 id="modal-add-title" class="text-2xl font-black uppercase text-white mb-4 text-center gradient-text">new record</h2>
+            <div class="space-y-4 max-h-[60vh] overflow-y-auto pr-1 no-scrollbar">
+                <!-- Custom category dropdown -->
+                <div>
+                    <label class="text-[9px] font-bold text-gray-500 uppercase ml-2 mb-1 block">type</label>
+                    <div class="custom-dropdown" id="category-dropdown">
+                        <div class="dropdown-selected" onclick="toggleDropdown()">
+                            <span id="selected-category-display">
+                                <i class="fa-solid fa-note-sticky cat-notes"></i>
+                                <span>Notes</span>
+                            </span>
+                            <i class="fa-solid fa-chevron-down text-gray-400"></i>
+                        </div>
+                        <div class="dropdown-options" id="dropdown-options">
+                            <div class="dropdown-option" data-value="social" onclick="selectCategory('social')">
+                                <i class="fa-brands fa-instagram cat-social"></i>
+                                <span>Social</span>
+                            </div>
+                            <div class="dropdown-option" data-value="ott" onclick="selectCategory('ott')">
+                                <i class="fa-solid fa-film cat-ott"></i>
+                                <span>OTT</span>
+                            </div>
+                            <div class="dropdown-option" data-value="vpn" onclick="selectCategory('vpn')">
+                                <i class="fa-solid fa-shield-halved cat-vpn"></i>
+                                <span>VPN</span>
+                            </div>
+                            <div class="dropdown-option" data-value="notes" onclick="selectCategory('notes')">
+                                <i class="fa-solid fa-note-sticky cat-notes"></i>
+                                <span>Notes</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Hidden input to store selected value for form submission -->
+                    <input type="hidden" id="note-category" value="notes">
+                </div>
 
-        // Helper functions
-        function showToast(text) {
-            toast.textContent = text;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
-        }
+                <div>
+                    <label class="text-[9px] font-bold text-gray-500 uppercase ml-2 mb-1 block">title</label>
+                    <input type="text" id="note-title" placeholder="e.g. Netflix, Gmail" class="w-full glass-panel border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none bg-transparent">
+                </div>
+                <!-- Tag field (for all types) -->
+                <div>
+                    <label class="text-[9px] font-bold text-gray-500 uppercase ml-2 mb-1 block">tag (optional)</label>
+                    <input type="text" id="note-tag" placeholder="work, personal, etc." class="w-full glass-panel border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none bg-transparent">
+                </div>
+                <!-- Used toggle -->
+                <div class="flex items-center justify-between glass-panel p-3 rounded-xl border border-white/10">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase">Mark as used</span>
+                    <label class="switch">
+                        <input type="checkbox" id="note-used">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div id="simple-content-group">
+                    <label class="text-[9px] font-bold text-gray-500 uppercase ml-2 mb-1 block">content</label>
+                    <textarea id="note-content" rows="4" placeholder="any text, notes..." class="w-full glass-panel border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none bg-transparent resize-none"></textarea>
+                </div>
+                <div id="structured-fields-group" class="space-y-3 hidden">
+                    <div><label class="text-[9px] font-bold text-gray-500 uppercase ml-2 mb-1 block">email</label><input type="email" id="field-email" placeholder="email@example.com" class="w-full glass-panel border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none bg-transparent"></div>
+                    <div><label class="text-[9px] font-bold text-gray-500 uppercase ml-2 mb-1 block">username</label><input type="text" id="field-username" placeholder="username" class="w-full glass-panel border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none bg-transparent"></div>
+                    <div><label class="text-[9px] font-bold text-gray-500 uppercase ml-2 mb-1 block">password</label><input type="text" id="field-password" placeholder="••••••••" class="w-full glass-panel border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none bg-transparent"></div>
+                    <div><label class="text-[9px] font-bold text-gray-500 uppercase ml-2 mb-1 block">note (optional)</label><textarea id="field-note" rows="2" placeholder="extra info..." class="w-full glass-panel border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none bg-transparent resize-none"></textarea></div>
+                </div>
+            </div>
+            <button id="save-note-btn" onclick="saveNote()" class="w-full btn-primary text-white py-4 rounded-xl font-black uppercase text-xs tracking-widest mt-4"><i class="fa-regular fa-floppy-disk mr-2"></i> save entry</button>
+        </div>
+    </div>
 
-        // Toggle popups
-        userIcon.addEventListener('click', (e) => {
-            e.stopPropagation();
-            imageHostPopup.classList.remove('show');
-            userPopup.classList.toggle('show');
-        });
-        imageHostIcon.addEventListener('click', (e) => {
-            e.stopPropagation();
-            userPopup.classList.remove('show');
-            imageHostPopup.classList.toggle('show');
-            renderHistory();
-        });
-        document.addEventListener('click', () => {
-            userPopup.classList.remove('show');
-            imageHostPopup.classList.remove('show');
-        });
-        [userPopup, imageHostPopup].forEach(p => p.addEventListener('click', (e) => e.stopPropagation()));
+    <!-- VIEW NOTE MODAL -->
+    <div id="modal-view-note" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-xl" onclick="closeViewModal()"></div>
+        <div class="big-modal relative z-10 animate-pop-up">
+            <button onclick="closeViewModal()" class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70"><i class="fa-solid fa-xmark"></i></button>
+            <div class="p-6 max-h-[70vh] overflow-y-auto no-scrollbar">
+                <div class="flex flex-wrap gap-2 items-start mb-3">
+                    <span id="view-category-badge" class="category-badge text-[10px]">category</span>
+                    <span id="view-used-badge" class="category-badge used-badge hidden">used</span>
+                    <span id="view-tag-badge" class="category-badge bg-white/5 border-white/10 hidden"></span>
+                    <span id="view-date" class="text-[9px] text-gray-500 font-mono ml-auto">just now</span>
+                </div>
+                <h2 id="view-title" class="text-2xl font-black uppercase text-white leading-none mb-5 gradient-text">Title</h2>
+                <div id="view-fields-container" class="space-y-3 mb-8"></div>
+                <div class="flex gap-3 mt-4">
+                    <button onclick="editCurrentNote()" class="flex-1 py-4 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-500/10 text-blue-500 font-black uppercase text-xs border border-blue-500/30 hover:scale-[1.02] active:scale-95 transition"><i class="fa-regular fa-pen-to-square mr-2"></i> edit</button>
+                    <button onclick="confirmDeleteNote()" class="flex-1 py-4 rounded-xl bg-gradient-to-br from-red-500/20 to-red-500/10 text-red-500 font-black uppercase text-xs border border-red-500/30 hover:scale-[1.02] active:scale-95 transition"><i class="fa-regular fa-trash-can mr-2"></i> delete</button>
+                </div>
+                <div class="mt-3">
+                    <button onclick="closeViewModal()" class="w-full py-4 rounded-xl glass-panel text-white font-black uppercase text-xs border border-white/5 hover:scale-[1.02] active:scale-95 transition"><i class="fa-solid fa-arrow-left mr-2"></i> back</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        // Image host upload
-        uploadArea.addEventListener('click', () => hostFileInput.click());
-        hostFileInput.addEventListener('change', () => {
-            if (hostFileInput.files.length) {
-                uploadHostBtn.disabled = false;
-                uploadStatus.textContent = `Selected: ${hostFileInput.files[0].name}`;
-            } else {
-                uploadHostBtn.disabled = true;
-                uploadStatus.textContent = '';
-            }
-        });
-        uploadHostBtn.addEventListener('click', async () => {
-            const file = hostFileInput.files[0];
-            if (!file) return;
-            uploadHostBtn.disabled = true;
-            uploadStatus.textContent = 'Uploading...';
-            const formData = new FormData();
-            formData.append('image', file);
-            try {
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
-                    method: 'POST',
-                    body: formData
-                });
-                const data = await res.json();
-                if (data.success) {
-                    const url = data.data.url;
-                    uploadStatus.textContent = 'Upload complete!';
-                    showToast('Image uploaded!');
-                    uploadedLinkSpan.textContent = url;
-                    uploadedLinkContainer.style.display = 'block';
-                    saveHistory(url);
-                    // Optionally fill the add modal
-                    if (confirm('Use this image in a new item?')) {
-                        imageHostPopup.classList.remove('show');
-                        resetModal();
-                        document.getElementById('typeSelect').value = 'image';
-                        toggleFormFields();
-                        document.getElementById('inpImageUrl').value = url;
-                        modal.style.display = 'flex';
-                    }
+    <!-- PROFILE MODAL (enhanced) -->
+    <div id="modal-profile" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-xl" onclick="closeProfileModal()"></div>
+        <div class="glass-panel w-full max-w-sm rounded-[35px] p-6 relative z-10 animate-pop-up">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-black uppercase text-white gradient-text">Profile</h3>
+                <button onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-black/50 flex items-center justify-center hover:bg-black/70"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-4">
+                <div class="glass-panel p-4 rounded-2xl border border-white/5">
+                    <p class="text-[9px] text-gray-500 uppercase font-bold mb-1">Name</p>
+                    <p id="profile-name" class="text-sm font-bold text-white">-</p>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl border border-white/5">
+                    <p class="text-[9px] text-gray-500 uppercase font-bold mb-1">Email</p>
+                    <p id="profile-email" class="text-sm font-bold text-white">-</p>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl border border-white/5">
+                    <p class="text-[9px] text-gray-500 uppercase font-bold mb-1">Total entries</p>
+                    <p id="profile-total" class="text-sm font-bold text-white">0</p>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl border border-white/5">
+                    <p class="text-[9px] text-gray-500 uppercase font-bold mb-1">Member since</p>
+                    <p id="profile-joined" class="text-sm font-bold text-white">-</p>
+                </div>
+                <!-- History button -->
+                <button onclick="openHistoryModal()" class="w-full py-4 rounded-xl glass-panel text-primary font-black uppercase text-xs border border-primary/30 hover:scale-[1.02] transition">
+                    <i class="fa-regular fa-clock mr-2"></i> Deleted History
+                </button>
+                <button onclick="confirmLogout()" class="w-full py-4 rounded-xl bg-gradient-to-br from-red-500/20 to-red-500/10 text-red-500 font-black uppercase text-xs border border-red-500/30 hover:scale-[1.02] transition"><i class="fa-solid fa-power-off mr-2"></i> Log out</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HISTORY MODAL (deleted items) -->
+    <div id="modal-history" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-xl" onclick="closeHistoryModal()"></div>
+        <div class="big-modal relative z-10 animate-pop-up">
+            <button onclick="closeHistoryModal()" class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70"><i class="fa-solid fa-xmark"></i></button>
+            <div class="p-6">
+                <h2 class="text-2xl font-black uppercase text-white mb-4 text-center gradient-text">deleted entries</h2>
+                <div id="history-list" class="space-y-3 max-h-[60vh] overflow-y-auto pr-1 no-scrollbar">
+                    <!-- populated by js -->
+                </div>
+                <div class="mt-6">
+                    <button onclick="closeHistoryModal()" class="w-full py-4 rounded-xl glass-panel text-white font-black uppercase text-xs border border-white/5 hover:scale-[1.02] transition">close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- READ-ONLY HISTORY VIEW MODAL (shows full deleted item) -->
+    <div id="modal-history-view" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-xl" onclick="closeHistoryViewModal()"></div>
+        <div class="big-modal relative z-10 animate-pop-up">
+            <button onclick="closeHistoryViewModal()" class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70"><i class="fa-solid fa-xmark"></i></button>
+            <div class="p-6 max-h-[70vh] overflow-y-auto no-scrollbar">
+                <div class="flex flex-wrap gap-2 items-start mb-3">
+                    <span id="history-view-category" class="category-badge text-[10px]"></span>
+                    <span id="history-view-used" class="category-badge used-badge hidden">used</span>
+                    <span id="history-view-tag" class="category-badge bg-white/5 border-white/10 hidden"></span>
+                    <span id="history-view-deleted" class="text-[9px] text-gray-500 font-mono ml-auto"></span>
+                </div>
+                <h2 id="history-view-title" class="text-2xl font-black uppercase text-white leading-none mb-5 gradient-text"></h2>
+                <div id="history-view-fields" class="space-y-3 mb-8"></div>
+                <div class="flex gap-3 mt-4">
+                    <button onclick="permanentDeleteHistoryItem()" class="flex-1 py-4 rounded-xl bg-gradient-to-br from-red-500/20 to-red-500/10 text-red-500 font-black uppercase text-xs border border-red-500/30 hover:scale-[1.02] transition"><i class="fa-regular fa-trash-can mr-2"></i> permanently delete</button>
+                    <button onclick="closeHistoryViewModal()" class="flex-1 py-4 rounded-xl glass-panel text-white font-black uppercase text-xs border border-white/5 hover:scale-[1.02] transition">back</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONFIRM MODAL (reusable for delete/logout) -->
+    <div id="modal-confirm" class="fixed inset-0 z-[110] hidden items-center justify-center p-6">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-xl"></div>
+        <div class="glass-panel w-full max-w-sm rounded-[35px] p-6 relative z-20 text-center animate-pop-up">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 text-primary flex items-center justify-center mx-auto mb-4 border border-primary/20">
+                <i id="confirm-icon" class="fa-solid fa-triangle-exclamation text-2xl"></i>
+            </div>
+            <h3 id="confirm-title" class="text-xl font-black uppercase text-white mb-2 gradient-text">Confirm</h3>
+            <p id="confirm-message" class="text-[10px] text-gray-500 font-bold uppercase mb-6">Are you sure?</p>
+            <div class="flex gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 py-4 rounded-2xl glass-panel text-[10px] font-black uppercase tracking-widest text-gray-400 hover:scale-[1.02] active:scale-95 transition">Cancel</button>
+                <button id="confirm-action-btn" onclick="executeConfirmedAction()" class="flex-1 py-4 rounded-2xl btn-primary text-white text-[10px] font-black uppercase tracking-widest active:scale-95 transition">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function(){
+            // ---------- state ----------
+            let notes = [];
+            let deletedNotes = []; // array of deleted items with deletion timestamp
+            let currentViewId = null;
+            let editingId = null;
+            let currentFilter = 'all';
+            let currentSearch = '';
+            let currentUser = null;
+            let pendingAction = null; // 'deleteNote', 'logout', 'permanentDelete'
+            let historyViewIndex = null; // for permanent delete from history view
+
+            // Category display
+            const categoryDisplay = { social: 'Social', ott: 'OTT', vpn: 'VPN', notes: 'Notes' };
+            const categoryIcons = { 
+                social: 'fa-brands fa-instagram', 
+                ott: 'fa-solid fa-film', 
+                vpn: 'fa-solid fa-shield-halved', 
+                notes: 'fa-solid fa-note-sticky' 
+            };
+            const categoryColors = {
+                social: '#833ab4',
+                ott: '#ff5e62',
+                vpn: '#2193b0',
+                notes: '#654ea3'
+            };
+
+            // ---------- Auth ----------
+            function loadUser() {
+                const stored = localStorage.getItem('neccore_user');
+                if (stored) {
+                    try {
+                        currentUser = JSON.parse(stored);
+                    } catch { currentUser = null; }
+                }
+                if (currentUser && currentUser.loggedIn) {
+                    document.getElementById('auth-screen').style.display = 'none';
+                    document.getElementById('main-app').style.display = 'block';
+                    document.getElementById('profile-name').innerText = currentUser.name || 'User';
+                    document.getElementById('profile-email').innerText = currentUser.email || '';
+                    document.getElementById('profile-joined').innerText = currentUser.joined || 'N/A';
                 } else {
-                    throw new Error('Upload failed');
+                    document.getElementById('auth-screen').style.display = 'flex';
+                    document.getElementById('main-app').style.display = 'none';
                 }
-            } catch (err) {
-                uploadStatus.textContent = 'Error: ' + err.message;
-                showToast('Upload failed');
-            } finally {
-                uploadHostBtn.disabled = false;
-                hostFileInput.value = '';
             }
-        });
 
-        copyLinkBtn.addEventListener('click', () => {
-            navigator.clipboard.writeText(uploadedLinkSpan.textContent).then(() => showToast('Link copied!'));
-        });
+            window.toggleAuth = function(mode) {
+                currentAuthMode = mode;
+                document.getElementById('tab-login').classList.toggle('tab-active', mode==='login');
+                document.getElementById('tab-login').classList.toggle('tab-inactive', mode!=='login');
+                document.getElementById('tab-signup').classList.toggle('tab-active', mode==='signup');
+                document.getElementById('tab-signup').classList.toggle('tab-inactive', mode!=='signup');
+                const nameGroup = document.getElementById('input-name-group');
+                const confirmGroup = document.getElementById('confirm-pass-group');
+                if (mode === 'signup') {
+                    nameGroup.classList.remove('hidden');
+                    confirmGroup.classList.remove('hidden');
+                    document.getElementById('btn-auth-action').innerText = 'Create Account';
+                } else {
+                    nameGroup.classList.add('hidden');
+                    confirmGroup.classList.add('hidden');
+                    document.getElementById('btn-auth-action').innerText = 'Enter vault';
+                }
+            };
 
-        // Lightbox
-        window.openLightbox = (url) => {
-            lightboxImg.src = url;
-            downloadLink.href = url;
-            lightbox.style.display = 'flex';
-        };
-        lightboxClose.addEventListener('click', () => lightbox.style.display = 'none');
-        lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.style.display = 'none'; });
+            window.handleAuth = function() {
+                const email = document.getElementById('auth-email').value.trim();
+                const pass = document.getElementById('auth-pass').value;
+                const name = document.getElementById('auth-name').value.trim();
+                
+                if (!email || !pass) { showToast('Fill all fields', 'error'); return; }
+                
+                if (currentAuthMode === 'signup') {
+                    if (!name) { showToast('Enter your name', 'error'); return; }
+                    const confirm = document.getElementById('auth-confirm').value;
+                    if (pass !== confirm) { showToast('Passwords do not match', 'error'); return; }
+                    // Mock signup - store user
+                    const user = { 
+                        email, 
+                        name: name, 
+                        loggedIn: true,
+                        joined: new Date().toLocaleDateString()
+                    };
+                    localStorage.setItem('neccore_user', JSON.stringify(user));
+                    currentUser = user;
+                } else {
+                    // Mock login - accept any credentials (for demo)
+                    const user = { 
+                        email, 
+                        name: email.split('@')[0], 
+                        loggedIn: true,
+                        joined: '01 Jan 2025'
+                    };
+                    localStorage.setItem('neccore_user', JSON.stringify(user));
+                    currentUser = user;
+                }
+                
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
+                document.getElementById('profile-name').innerText = currentUser.name;
+                document.getElementById('profile-email').innerText = currentUser.email;
+                document.getElementById('profile-joined').innerText = currentUser.joined || 'N/A';
+                showToast('Welcome!', 'success');
+            };
 
-        // Logout with confirmation
-        popupLogout.addEventListener('click', () => {
-            if (confirm('Are you sure you want to sign out?')) {
-                signOut(auth);
-                userPopup.classList.remove('show');
+            window.confirmLogout = function() {
+                closeProfileModal();
+                pendingAction = 'logout';
+                document.getElementById('confirm-icon').className = 'fa-solid fa-power-off text-2xl';
+                document.getElementById('confirm-title').innerText = 'Log out?';
+                document.getElementById('confirm-message').innerText = 'Are you sure you want to logout?';
+                document.getElementById('modal-confirm').classList.replace('hidden', 'flex');
+            };
+
+            window.executeConfirmedAction = function() {
+                if (pendingAction === 'logout') {
+                    localStorage.removeItem('neccore_user');
+                    currentUser = null;
+                    document.getElementById('main-app').style.display = 'none';
+                    document.getElementById('auth-screen').style.display = 'flex';
+                    showToast('Logged out', 'success');
+                } else if (pendingAction === 'deleteNote' && currentViewId) {
+                    // Find the note to be deleted
+                    const noteToDelete = notes.find(n => n.id === currentViewId);
+                    if (noteToDelete) {
+                        // Push to deletedNotes with deletion timestamp
+                        const deletedItem = {
+                            ...noteToDelete,
+                            deletedAt: new Date().toISOString()
+                        };
+                        deletedNotes.push(deletedItem);
+                        localStorage.setItem('neccore_deleted', JSON.stringify(deletedNotes));
+                    }
+                    notes = notes.filter(n => n.id !== currentViewId);
+                    saveNotes();
+                    closeViewModal();
+                    showToast('Entry deleted', 'success');
+                } else if (pendingAction === 'permanentDelete' && historyViewIndex !== null) {
+                    // Remove from deletedNotes permanently
+                    deletedNotes.splice(historyViewIndex, 1);
+                    localStorage.setItem('neccore_deleted', JSON.stringify(deletedNotes));
+                    closeHistoryViewModal();
+                    renderHistoryList(); // refresh history modal if open
+                    showToast('Permanently deleted', 'success');
+                }
+                closeConfirmModal();
+            };
+
+            window.closeConfirmModal = function() {
+                document.getElementById('modal-confirm').classList.add('hidden');
+                document.getElementById('modal-confirm').classList.remove('flex');
+                pendingAction = null;
+            };
+
+            window.confirmDeleteNote = function() {
+                if (!currentViewId) return;
+                pendingAction = 'deleteNote';
+                document.getElementById('confirm-icon').className = 'fa-regular fa-trash-can text-2xl';
+                document.getElementById('confirm-title').innerText = 'Delete entry?';
+                document.getElementById('confirm-message').innerText = 'This will move to history.';
+                document.getElementById('modal-confirm').classList.replace('hidden', 'flex');
+            };
+
+            // ---------- Profile modal ----------
+            window.openProfileModal = function() {
+                document.getElementById('profile-total').innerText = notes.length;
+                document.getElementById('modal-profile').classList.replace('hidden', 'flex');
+            };
+            window.closeProfileModal = function() {
+                document.getElementById('modal-profile').classList.add('hidden');
+                document.getElementById('modal-profile').classList.remove('flex');
+            };
+
+            // ---------- History modal ----------
+            window.openHistoryModal = function() {
+                closeProfileModal();
+                loadDeletedNotes(); // ensure fresh
+                renderHistoryList();
+                document.getElementById('modal-history').classList.replace('hidden', 'flex');
+            };
+            window.closeHistoryModal = function() {
+                document.getElementById('modal-history').classList.add('hidden');
+                document.getElementById('modal-history').classList.remove('flex');
+            };
+
+            function loadDeletedNotes() {
+                const stored = localStorage.getItem('neccore_deleted');
+                deletedNotes = stored ? JSON.parse(stored) : [];
             }
-        });
 
-        // ---------- Auth UI ----------
-        function renderAuthUI() {
-            mainContent.innerHTML = `
-                <div class="auth-container">
-                    <div class="auth-card">
-                        <div class="auth-tabs">
-                            <div class="auth-tab active" id="tabLogin">Login</div>
-                            <div class="auth-tab" id="tabSignup">Sign up</div>
-                        </div>
-                        
-                        <div class="auth-form active" id="loginForm">
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" id="loginEmail" class="input-glass" placeholder="your@email.com">
-                            </div>
-                            <div class="form-group">
-                                <label>Password</label>
-                                <input type="password" id="loginPassword" class="input-glass" placeholder="••••••••">
-                            </div>
-                            <button class="btn-primary" id="loginBtn">Log in</button>
-                            <div class="auth-footer">
-                                <span id="forgotPassword">Forgot password?</span>
-                            </div>
-                        </div>
-
-                        <div class="auth-form" id="signupForm">
-                            <div class="form-group">
-                                <label>Nickname</label>
-                                <input type="text" id="signupNickname" class="input-glass" placeholder="JohnDoe">
-                            </div>
-                            <div class="form-group">
-                                <label>Real Name</label>
-                                <input type="text" id="signupRealname" class="input-glass" placeholder="John Doe">
-                            </div>
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" id="signupEmail" class="input-glass" placeholder="your@email.com">
-                            </div>
-                            <div class="form-group">
-                                <label>Password</label>
-                                <input type="password" id="signupPassword" class="input-glass" placeholder="••••••••">
-                            </div>
-                            <div class="form-group">
-                                <label>Confirm Password</label>
-                                <input type="password" id="signupConfirm" class="input-glass" placeholder="••••••••">
-                            </div>
-                            <button class="btn-primary" id="signupBtn">Create account</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('tabLogin').addEventListener('click', () => {
-                document.getElementById('tabLogin').classList.add('active');
-                document.getElementById('tabSignup').classList.remove('active');
-                document.getElementById('loginForm').classList.add('active');
-                document.getElementById('signupForm').classList.remove('active');
-            });
-            document.getElementById('tabSignup').addEventListener('click', () => {
-                document.getElementById('tabSignup').classList.add('active');
-                document.getElementById('tabLogin').classList.remove('active');
-                document.getElementById('signupForm').classList.add('active');
-                document.getElementById('loginForm').classList.remove('active');
-            });
-
-            document.getElementById('loginBtn').addEventListener('click', async () => {
-                const email = document.getElementById('loginEmail').value.trim();
-                const pass = document.getElementById('loginPassword').value.trim();
-                if (!email || !pass) return showToast('Fill all fields');
-                try {
-                    await signInWithEmailAndPassword(auth, email, pass);
-                } catch (err) {
-                    showToast(err.message);
-                }
-            });
-
-            document.getElementById('signupBtn').addEventListener('click', async () => {
-                const nickname = document.getElementById('signupNickname').value.trim();
-                const realname = document.getElementById('signupRealname').value.trim();
-                const email = document.getElementById('signupEmail').value.trim();
-                const pass = document.getElementById('signupPassword').value.trim();
-                const confirm = document.getElementById('signupConfirm').value.trim();
-                if (!nickname || !realname || !email || !pass || !confirm) return showToast('All fields required');
-                if (pass !== confirm) return showToast('Passwords do not match');
-                if (pass.length < 6) return showToast('Password must be at least 6 characters');
-                try {
-                    const cred = await createUserWithEmailAndPassword(auth, email, pass);
-                    await addDoc(collection(db, "users"), {
-                        uid: cred.user.uid,
-                        nickname,
-                        realname,
-                        email,
-                        createdAt: serverTimestamp()
-                    });
-                    showToast('Account created!');
-                } catch (err) {
-                    showToast(err.message);
-                }
-            });
-
-            document.getElementById('forgotPassword').addEventListener('click', () => {
-                const email = prompt('Enter your email address:');
-                if (email) {
-                    sendPasswordResetEmail(auth, email)
-                        .then(() => showToast('Reset email sent!'))
-                        .catch(err => showToast(err.message));
-                }
-            });
-        }
-
-        // ---------- Vault UI ----------
-        function renderVault() {
-            mainContent.innerHTML = `
-                <div class="app-container">
-                    <div class="search-section">
-                        <div class="search-wrapper">
-                            <input type="text" id="searchInput" placeholder="Search notes, credentials, tags...">
-                            <button class="search-add-btn" id="searchAddBtn"><i class="ri-add-line"></i></button>
-                        </div>
-                    </div>
-
-                    <div class="filter-bar">
-                        <div class="filter-chip active" data-type="all"><i class="ri-stack-line"></i> All</div>
-                        <div class="filter-chip" data-type="note"><i class="ri-file-text-line"></i> Notes</div>
-                        <div class="filter-chip" data-type="account"><i class="ri-shield-user-line"></i> Accounts</div>
-                        <div class="filter-chip" data-type="image"><i class="ri-image-line"></i> Images</div>
-
-                        <select id="categoryFilter" class="filter-select">
-                            <option value="all">All Categories</option>
-                            <option value="Personal">Personal</option>
-                            <option value="Work">Work</option>
-                            <option value="Finance">Finance</option>
-                            <option value="Other">Other</option>
-                        </select>
-
-                        <div class="filter-chip" id="favoriteFilter"><i class="ri-star-fill"></i> Favorites</div>
-
-                        <div class="view-toggle">
-                            <div class="filter-chip active" id="btn-active" data-trash="false"><i class="ri-database-2-line"></i> Active</div>
-                            <div class="filter-chip" id="btn-trash" data-trash="true"><i class="ri-delete-bin-line"></i> Trash</div>
-                        </div>
-                    </div>
-
-                    <div id="grid" class="masonry-grid"></div>
-                    <div id="loader" class="loader-wrapper" style="display:none;"><div class="spinner"></div></div>
-                </div>
-            `;
-
-            // Attach listeners
-            document.getElementById('searchInput').addEventListener('input', filterCards);
-            document.getElementById('searchAddBtn').addEventListener('click', () => {
-                resetModal();
-                modal.style.display = 'flex';
-                toggleFormFields();
-            });
-
-            document.querySelectorAll('.filter-bar .filter-chip[data-type]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.filter-bar .filter-chip[data-type]').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    currentFilterType = btn.dataset.type;
-                    filterCards();
-                });
-            });
-
-            document.getElementById('categoryFilter').addEventListener('change', (e) => {
-                currentCategoryFilter = e.target.value;
-                filterCards();
-            });
-
-            document.getElementById('favoriteFilter').addEventListener('click', (e) => {
-                showFavoritesOnly = !showFavoritesOnly;
-                e.target.classList.toggle('active', showFavoritesOnly);
-                filterCards();
-            });
-
-            document.getElementById('btn-active').addEventListener('click', () => {
-                isTrashMode = false;
-                document.getElementById('btn-active').classList.add('active');
-                document.getElementById('btn-trash').classList.remove('active');
-                loadItems();
-            });
-            document.getElementById('btn-trash').addEventListener('click', () => {
-                isTrashMode = true;
-                document.getElementById('btn-trash').classList.add('active');
-                document.getElementById('btn-active').classList.remove('active');
-                loadItems();
-            });
-
-            loadItems();
-        }
-
-        async function loadItems() {
-            if (!currentUser) return;
-            const grid = document.getElementById('grid');
-            const loader = document.getElementById('loader');
-            loader.style.display = 'flex';
-            grid.innerHTML = '';
-
-            if (unsubscribeItems) unsubscribeItems();
-
-            const q = query(
-                collection(db, "necxy_items"),
-                where("userId", "==", currentUser.uid),
-                where("isDeleted", "==", isTrashMode),
-                orderBy("createdAt", "desc")
-            );
-
-            unsubscribeItems = onSnapshot(q, (snapshot) => {
-                loader.style.display = 'none';
-                grid.innerHTML = '';
-                if (snapshot.empty) {
-                    grid.innerHTML = `<p style="color:#666; text-align:center; width:100%;">✦ No items found</p>`;
+            function renderHistoryList() {
+                const container = document.getElementById('history-list');
+                if (deletedNotes.length === 0) {
+                    container.innerHTML = '<div class="text-center py-10 opacity-60"><i class="fa-regular fa-clock text-4xl text-white/20 mb-2"></i><p class="text-gray-500 text-xs font-bold uppercase">no deleted entries</p></div>';
                     return;
                 }
-                snapshot.forEach(docSnap => renderCard(docSnap.id, docSnap.data()));
-                filterCards();
-            });
-        }
-
-        function renderCard(id, data) {
-            const grid = document.getElementById('grid');
-            const card = document.createElement('div');
-            card.className = 'vault-card';
-            card.dataset.id = id;
-            card.dataset.type = data.type;
-            card.dataset.category = data.category || 'Other';
-            card.dataset.favorite = data.favorite || false;
-            card.dataset.tags = (data.tags || []).join(' ').toLowerCase();
-
-            let icon = 'ri-file-text-line';
-            if (data.type === 'account') icon = 'ri-shield-user-line';
-            else if (data.type === 'image') icon = 'ri-image-line';
-
-            const tagsHtml = (data.tags && data.tags.length) ? 
-                `<div class="tag-container">${data.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>` : '';
-
-            let contentHtml = '';
-            if (data.type === 'note') {
-                contentHtml = `<div class="content-block">${data.content || ''}</div>`;
-            } else if (data.type === 'account') {
-                contentHtml = `
-                    <div class="cred-line"><span>${data.username || ''}</span> <button class="icon-btn" onclick="copyText('${data.username}')"><i class="ri-file-copy-line"></i></button></div>
-                    <div class="cred-line"><span class="blur-hidden">${data.password || ''}</span> 
-                        <button class="icon-btn" onclick="copyText('${data.password}')"><i class="ri-file-copy-line"></i></button>
-                        <button class="icon-btn" onclick="toggleBlur(this)"><i class="ri-eye-line"></i></button>
-                    </div>
-                `;
-            } else if (data.type === 'image' && data.imageUrl) {
-                contentHtml = `<img src="${data.imageUrl}" class="image-thumb" onclick="openLightbox('${data.imageUrl}')">`;
-            }
-
-            const createdAt = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString() : '';
-            const editedAt = data.editedAt ? new Date(data.editedAt.seconds * 1000).toLocaleString() : '';
-
-            card.innerHTML = `
-                <div class="card-header">
-                    <span class="type-badge"><i class="${icon}"></i> ${data.type}</span>
-                    <div style="display:flex; align-items:center; gap:4px;">
-                        <i class="ri-star-fill favorite-star ${data.favorite ? '' : 'inactive'}" onclick="toggleFavorite('${id}', ${!data.favorite})"></i>
-                        <div class="card-actions">
-                            ${!isTrashMode ? `<button class="icon-btn" onclick="editItem('${id}')"><i class="ri-pencil-line"></i></button>` : ''}
-                            ${!isTrashMode ? `<button class="icon-btn" onclick="duplicateItem('${id}')"><i class="ri-file-copy-line"></i></button>` : ''}
-                            ${!isTrashMode ? `<button class="icon-btn" onclick="softDelete('${id}')"><i class="ri-delete-bin-line"></i></button>` : ''}
-                            ${isTrashMode ? `<button class="icon-btn" onclick="restoreItem('${id}')"><i class="ri-refresh-line"></i></button>` : ''}
-                            ${isTrashMode ? `<button class="icon-btn" onclick="permaDelete('${id}')"><i class="ri-close-circle-line"></i></button>` : ''}
+                // sort by deletion date newest first
+                const sorted = [...deletedNotes].sort((a,b) => new Date(b.deletedAt) - new Date(a.deletedAt));
+                let html = '';
+                sorted.forEach((item, index) => {
+                    const date = item.deletedAt ? new Date(item.deletedAt).toLocaleString() : '';
+                    html += `
+                        <div class="glass-panel p-4 rounded-2xl border border-white/5 flex justify-between items-center">
+                            <div class="flex-1 cursor-pointer" onclick="openHistoryViewModal(${index})">
+                                <p class="text-xs font-bold text-white uppercase">${item.title || 'Untitled'}</p>
+                                <p class="text-[9px] text-gray-400 mt-1">${categoryDisplay[item.category] || item.category} • ${date}</p>
+                            </div>
+                            <button onclick="event.stopPropagation(); confirmPermanentDelete(${index})" class="delete-history-btn"><i class="fa-regular fa-trash-can"></i></button>
                         </div>
-                    </div>
-                </div>
-                <div class="card-title">${data.title}</div>
-                ${contentHtml}
-                ${tagsHtml}
-                <div class="meta-footer">
-                    <span><i class="ri-time-line"></i> ${createdAt}</span>
-                    <span><i class="ri-pencil-line"></i> ${editedAt || '—'}</span>
-                </div>
-            `;
-            grid.appendChild(card);
-        }
-
-        // Global functions for card actions
-        window.copyText = (txt) => {
-            navigator.clipboard?.writeText(txt).then(() => showToast('Copied!'));
-        };
-        window.toggleBlur = (btn) => {
-            const span = btn.closest('.cred-line')?.querySelector('.blur-hidden');
-            if (span) span.style.filter = span.style.filter === 'blur(4px)' ? 'blur(0)' : 'blur(4px)';
-        };
-        window.toggleFavorite = async (id, newState) => {
-            await updateDoc(doc(db, "necxy_items", id), { favorite: newState, editedAt: serverTimestamp() });
-            showToast(newState ? 'Added to favorites' : 'Removed from favorites');
-        };
-        window.softDelete = async (id) => {
-            await updateDoc(doc(db, "necxy_items", id), { isDeleted: true, editedAt: serverTimestamp() });
-            showToast('Moved to trash');
-        };
-        window.restoreItem = async (id) => {
-            await updateDoc(doc(db, "necxy_items", id), { isDeleted: false, editedAt: serverTimestamp() });
-            showToast('Restored');
-        };
-        window.permaDelete = async (id) => {
-            if (confirm('Permanently delete? This cannot be undone.')) {
-                await deleteDoc(doc(db, "necxy_items", id));
-                showToast('Deleted forever');
+                    `;
+                });
+                container.innerHTML = html;
             }
-        };
-        window.duplicateItem = async (id) => {
-            const docRef = doc(db, "necxy_items", id);
-            const snap = await getDoc(docRef);
-            if (!snap.exists()) return;
-            const data = snap.data();
-            delete data.id; delete data.createdAt; delete data.editedAt;
-            data.title = data.title + ' (copy)';
-            data.createdAt = serverTimestamp();
-            await addDoc(collection(db, "necxy_items"), data);
-            showToast('Item duplicated');
-        };
-        window.editItem = async (id) => {
-            const docRef = doc(db, "necxy_items", id);
-            const snap = await getDoc(docRef);
-            if (!snap.exists()) return;
-            const data = snap.data();
-            editingId = id;
-            document.getElementById('typeSelect').value = data.type || 'note';
-            document.getElementById('inpTitle').value = data.title || '';
-            document.getElementById('inpContent').value = data.content || '';
-            document.getElementById('inpUser').value = data.username || '';
-            document.getElementById('inpPass').value = data.password || '';
-            document.getElementById('inpCategory').value = data.category || 'Other';
-            document.getElementById('inpTags').value = (data.tags || []).join(', ');
-            document.getElementById('inpFavorite').checked = data.favorite || false;
-            document.getElementById('inpImageUrl').value = data.imageUrl || '';
-            // removed document.getElementById('inpFile').value = ''; because it doesn't exist
-            toggleFormFields();
-            modalTitle.innerText = 'UPDATE ITEM';
-            modal.style.display = 'flex';
-        };
 
-        function filterCards() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            document.querySelectorAll('.vault-card').forEach(card => {
-                const type = card.dataset.type;
-                const category = card.dataset.category;
-                const favorite = card.dataset.favorite === 'true';
-                const tags = card.dataset.tags || '';
-                const title = card.querySelector('.card-title')?.innerText.toLowerCase() || '';
-                const content = card.querySelector('.content-block')?.innerText.toLowerCase() || '';
-                const matchesType = currentFilterType === 'all' || type === currentFilterType;
-                const matchesCategory = currentCategoryFilter === 'all' || category === currentCategoryFilter;
-                const matchesFavorite = !showFavoritesOnly || favorite;
-                const matchesSearch = title.includes(term) || content.includes(term) || tags.includes(term);
-                card.style.display = matchesType && matchesCategory && matchesFavorite && matchesSearch ? 'block' : 'none';
-            });
-        }
+            // Permanent delete from history
+            window.confirmPermanentDelete = function(index) {
+                historyViewIndex = index;
+                pendingAction = 'permanentDelete';
+                document.getElementById('confirm-icon').className = 'fa-regular fa-trash-can text-2xl';
+                document.getElementById('confirm-title').innerText = 'Permanently delete?';
+                document.getElementById('confirm-message').innerText = 'This cannot be undone.';
+                document.getElementById('modal-confirm').classList.replace('hidden', 'flex');
+            };
 
-        window.toggleFormFields = function() {
-            const type = document.getElementById('typeSelect').value;
-            document.getElementById('field-note').style.display = type === 'note' ? 'block' : 'none';
-            document.getElementById('field-account').style.display = type === 'account' ? 'block' : 'none';
-            document.getElementById('field-image').style.display = type === 'image' ? 'block' : 'none';
-        };
+            // History view modal
+            window.openHistoryViewModal = function(index) {
+                const item = deletedNotes[index];
+                if (!item) return;
+                historyViewIndex = index;
+                document.getElementById('history-view-category').innerText = categoryDisplay[item.category] || item.category;
+                document.getElementById('history-view-title').innerText = item.title || '';
+                document.getElementById('history-view-deleted').innerText = item.deletedAt ? new Date(item.deletedAt).toLocaleString() : '';
+                
+                // used badge
+                const usedBadge = document.getElementById('history-view-used');
+                if (item.used) usedBadge.classList.remove('hidden');
+                else usedBadge.classList.add('hidden');
+                
+                // tag badge
+                const tagBadge = document.getElementById('history-view-tag');
+                if (item.tag) {
+                    tagBadge.innerText = item.tag;
+                    tagBadge.classList.remove('hidden');
+                } else {
+                    tagBadge.classList.add('hidden');
+                }
+                
+                const container = document.getElementById('history-view-fields');
+                container.innerHTML = '';
+                if (item.category !== 'notes' && item.fields) {
+                    if (item.fields.email) addFieldRowReadOnly(container, 'email', item.fields.email);
+                    if (item.fields.username) addFieldRowReadOnly(container, 'username', item.fields.username);
+                    if (item.fields.password) addFieldRowReadOnly(container, 'password', item.fields.password);
+                    if (item.fields.note) addFieldRowReadOnly(container, 'note', item.fields.note);
+                } else {
+                    addFieldRowReadOnly(container, 'content', item.content || '');
+                }
+                
+                document.getElementById('modal-history-view').classList.replace('hidden', 'flex');
+            };
 
-        function resetModal() {
-            editingId = null;
-            document.getElementById('inpTitle').value = '';
-            document.getElementById('inpContent').value = '';
-            document.getElementById('inpUser').value = '';
-            document.getElementById('inpPass').value = '';
-            document.getElementById('inpCategory').value = 'Personal';
-            document.getElementById('inpTags').value = '';
-            document.getElementById('inpFavorite').checked = false;
-            document.getElementById('inpImageUrl').value = '';
-            // removed document.getElementById('inpFile').value = ''; // no such element
-            modalTitle.innerText = 'ENCRYPT NEW';
-        }
+            function addFieldRowReadOnly(container, label, value) {
+                const row = document.createElement('div');
+                row.className = 'field-row';
+                row.innerHTML = `
+                    <span class="field-label">${label}</span>
+                    <span class="field-value">${escapeHtml(value)}</span>
+                    <button class="copy-btn" onclick="copyText('${value.replace(/'/g, "\\'")}')"><i class="fa-regular fa-copy"></i></button>
+                `;
+                container.appendChild(row);
+            }
 
-        saveBtn.addEventListener('click', async () => {
-            const type = document.getElementById('typeSelect').value;
-            const title = document.getElementById('inpTitle').value.trim();
-            if (!title) return showToast('Title required');
-            if (!currentUser) return;
+            window.closeHistoryViewModal = function() {
+                document.getElementById('modal-history-view').classList.add('hidden');
+                document.getElementById('modal-history-view').classList.remove('flex');
+                historyViewIndex = null;
+            };
 
-            saveBtn.disabled = true;
-            saveBtn.innerHTML = '<i class="ri-loader-4-line"></i> SAVING';
+            window.permanentDeleteHistoryItem = function() {
+                if (historyViewIndex !== null) {
+                    pendingAction = 'permanentDelete';
+                    document.getElementById('confirm-icon').className = 'fa-regular fa-trash-can text-2xl';
+                    document.getElementById('confirm-title').innerText = 'Permanently delete?';
+                    document.getElementById('confirm-message').innerText = 'This cannot be undone.';
+                    document.getElementById('modal-confirm').classList.replace('hidden', 'flex');
+                }
+            };
 
-            try {
-                const tags = document.getElementById('inpTags').value.split(',').map(t => t.trim()).filter(t => t);
-                let payload = {
-                    title,
-                    type,
-                    category: document.getElementById('inpCategory').value,
-                    tags,
-                    favorite: document.getElementById('inpFavorite').checked,
-                    isDeleted: false,
-                    editedAt: serverTimestamp(),
-                    userId: currentUser.uid
-                };
-                if (!editingId) payload.createdAt = serverTimestamp();
+            // ---------- Notes functions ----------
+            function loadNotes() {
+                const stored = localStorage.getItem('neccore_notes_v5');
+                notes = stored ? JSON.parse(stored) : [];
+                renderNotes();
+            }
+            function saveNotes() {
+                localStorage.setItem('neccore_notes_v5', JSON.stringify(notes));
+                renderNotes();
+            }
 
-                if (type === 'note') {
-                    payload.content = document.getElementById('inpContent').value;
-                } else if (type === 'account') {
-                    payload.username = document.getElementById('inpUser').value;
-                    payload.password = document.getElementById('inpPass').value;
-                } else if (type === 'image') {
-                    let imageUrl = document.getElementById('inpImageUrl').value.trim();
-                    if (!imageUrl && !editingId) {
-                        throw new Error('Please provide an image URL or use the uploader');
+            // Search function
+            window.performSearch = function() {
+                currentSearch = document.getElementById('search-input').value.toLowerCase().trim();
+                renderNotes();
+            };
+
+            window.clearSearch = function() {
+                document.getElementById('search-input').value = '';
+                currentSearch = '';
+                renderNotes();
+            };
+
+            function matchesSearch(note) {
+                if (!currentSearch) return true;
+                const searchable = [
+                    note.title || '',
+                    note.tag || '',
+                    note.content || '',
+                    note.fields?.email || '',
+                    note.fields?.username || '',
+                    note.fields?.note || ''
+                ].join(' ').toLowerCase();
+                return searchable.includes(currentSearch);
+            }
+
+            function renderNotes() {
+                const grid = document.getElementById('notes-grid');
+                const countSpan = document.getElementById('note-count');
+                let filtered = notes;
+                if (currentFilter !== 'all') {
+                    filtered = filtered.filter(n => n.category === currentFilter);
+                }
+                filtered = filtered.filter(matchesSearch);
+                countSpan.innerText = filtered.length;
+                
+                if (filtered.length === 0) {
+                    grid.innerHTML = `<div class="text-center py-20 opacity-60"><i class="fa-regular fa-pen-to-square text-5xl text-white/20 mb-3"></i><p class="text-gray-500 text-sm font-bold uppercase tracking-widest">no entries</p></div>`;
+                    return;
+                }
+                
+                const sorted = [...filtered].sort((a,b)=> (b.timestamp||0) - (a.timestamp||0));
+                let html = '';
+                sorted.forEach(note => {
+                    const iconClass = categoryIcons[note.category] || 'fa-regular fa-file-lines';
+                    const catName = categoryDisplay[note.category] || note.category;
+                    let preview = '';
+                    if (note.category !== 'notes' && note.fields) {
+                        preview = note.fields.email || note.fields.username || 'account';
+                    } else {
+                        preview = (note.content || '').substring(0,60) + ((note.content||'').length>60?'…':'');
                     }
-                    payload.imageUrl = imageUrl;
-                }
+                    const usedBadge = note.used ? '<span class="text-[7px] font-black text-orange-400 uppercase bg-orange-400/10 px-1.5 py-0.5 rounded-md ml-1">used</span>' : '';
+                    const tagBadge = note.tag ? `<span class="text-[7px] font-black text-white/60 uppercase bg-white/5 px-1.5 py-0.5 rounded-md ml-1">${note.tag}</span>` : '';
+                    
+                    html += `<div class="note-card rounded-2xl p-4 flex items-center gap-4 group animate-fade-in" onclick="openViewModal('${note.id}')">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-black/40 to-black/60 flex items-center justify-center border border-white/5"><i class="${iconClass} text-2xl" style="color: ${categoryColors[note.category] || '#FF003C'}"></i></div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center flex-wrap gap-1 mb-0.5">
+                                <span class="text-[7px] font-black text-white/40 uppercase bg-white/5 px-1.5 py-0.5 rounded-md">${catName}</span>
+                                ${usedBadge}
+                                ${tagBadge}
+                            </div>
+                            <h3 class="font-bold text-[13px] text-white leading-tight truncate">${note.title || 'Untitled'}</h3>
+                            <p class="text-[10px] font-mono text-gray-400 mt-1 truncate">${preview}</p>
+                            <p class="text-[8px] font-bold text-yellow-400/50 mt-1">${formatTimestamp(note.timestamp)}</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/5 group-hover:bg-primary/20 group-hover:text-primary"><i class="fa-solid fa-chevron-right text-[10px]"></i></div>
+                    </div>`;
+                });
+                grid.innerHTML = html;
+            }
 
+            function formatTimestamp(ts) { return ts ? new Date(ts).toLocaleDateString() : ''; }
+
+            window.filterNotes = function(cat, btn) {
+                currentFilter = cat;
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderNotes();
+            };
+
+            // Custom dropdown functions
+            window.toggleDropdown = function() {
+                document.getElementById('dropdown-options').classList.toggle('show');
+            };
+
+            window.selectCategory = function(value) {
+                document.getElementById('note-category').value = value;
+                const displaySpan = document.getElementById('selected-category-display');
+                let iconHtml = '', catName = '';
+                if (value === 'social') {
+                    iconHtml = '<i class="fa-brands fa-instagram cat-social"></i>';
+                    catName = 'Social';
+                } else if (value === 'ott') {
+                    iconHtml = '<i class="fa-solid fa-film cat-ott"></i>';
+                    catName = 'OTT';
+                } else if (value === 'vpn') {
+                    iconHtml = '<i class="fa-solid fa-shield-halved cat-vpn"></i>';
+                    catName = 'VPN';
+                } else {
+                    iconHtml = '<i class="fa-solid fa-note-sticky cat-notes"></i>';
+                    catName = 'Notes';
+                }
+                displaySpan.innerHTML = iconHtml + '<span>' + catName + '</span>';
+                document.getElementById('dropdown-options').classList.remove('show');
+                
+                // Update fields visibility based on new category
+                toggleFieldsBasedOnCategory(value);
+            };
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                const dropdown = document.getElementById('category-dropdown');
+                if (dropdown && !dropdown.contains(event.target)) {
+                    document.getElementById('dropdown-options').classList.remove('show');
+                }
+            });
+
+            function toggleFieldsBasedOnCategory(cat) {
+                const simpleGroup = document.getElementById('simple-content-group');
+                const structuredGroup = document.getElementById('structured-fields-group');
+                if (cat === 'notes') {
+                    simpleGroup.classList.remove('hidden');
+                    structuredGroup.classList.add('hidden');
+                } else {
+                    simpleGroup.classList.add('hidden');
+                    structuredGroup.classList.remove('hidden');
+                }
+            }
+
+            // For backward compatibility with existing toggleFields
+            window.toggleFields = function() {
+                // This function is now replaced by toggleFieldsBasedOnCategory
+                // But we keep it for any external calls
+                const cat = document.getElementById('note-category').value;
+                toggleFieldsBasedOnCategory(cat);
+            };
+
+            window.openAddModal = function(editData = null) {
+                // Set dropdown based on editData
+                const cat = editData?.category || 'notes';
+                document.getElementById('note-category').value = cat;
+                const displaySpan = document.getElementById('selected-category-display');
+                let iconHtml = '', catName = '';
+                if (cat === 'social') {
+                    iconHtml = '<i class="fa-brands fa-instagram cat-social"></i>';
+                    catName = 'Social';
+                } else if (cat === 'ott') {
+                    iconHtml = '<i class="fa-solid fa-film cat-ott"></i>';
+                    catName = 'OTT';
+                } else if (cat === 'vpn') {
+                    iconHtml = '<i class="fa-solid fa-shield-halved cat-vpn"></i>';
+                    catName = 'VPN';
+                } else {
+                    iconHtml = '<i class="fa-solid fa-note-sticky cat-notes"></i>';
+                    catName = 'Notes';
+                }
+                displaySpan.innerHTML = iconHtml + '<span>' + catName + '</span>';
+
+                document.getElementById('note-title').value = editData?.title || '';
+                document.getElementById('note-tag').value = editData?.tag || '';
+                document.getElementById('note-used').checked = editData?.used || false;
+                document.getElementById('note-content').value = editData?.content || '';
+                document.getElementById('field-email').value = editData?.fields?.email || '';
+                document.getElementById('field-username').value = editData?.fields?.username || '';
+                document.getElementById('field-password').value = editData?.fields?.password || '';
+                document.getElementById('field-note').value = editData?.fields?.note || '';
+                editingId = editData ? editData.id : null;
+                document.getElementById('modal-add-title').innerText = editData ? 'edit record' : 'new record';
+                document.getElementById('save-note-btn').innerHTML = editData ? '<i class="fa-regular fa-pen-to-square mr-2"></i> update entry' : '<i class="fa-regular fa-floppy-disk mr-2"></i> save entry';
+                toggleFieldsBasedOnCategory(cat);
+                document.getElementById('modal-add-note').classList.replace('hidden', 'flex');
+            };
+
+            window.closeAddModal = function() { 
+                document.getElementById('modal-add-note').classList.add('hidden'); 
+                editingId = null; 
+                // close dropdown if open
+                document.getElementById('dropdown-options').classList.remove('show');
+            };
+
+            window.saveNote = function() {
+                const category = document.getElementById('note-category').value;
+                const title = document.getElementById('note-title').value.trim();
+                const tag = document.getElementById('note-tag').value.trim();
+                const used = document.getElementById('note-used').checked;
+                
+                if (!title) { showToast('Title required', 'error'); return; }
+                
+                let noteData = { 
+                    id: editingId || (Date.now()+'-'+Math.random()), 
+                    category, 
+                    title, 
+                    tag: tag || undefined,
+                    used: used,
+                    timestamp: editingId ? (notes.find(n=>n.id===editingId)?.timestamp||Date.now()) : Date.now() 
+                };
+                
+                if (category === 'notes') {
+                    const content = document.getElementById('note-content').value.trim();
+                    if (!content) { showToast('Content empty', 'error'); return; }
+                    noteData.content = content;
+                } else {
+                    const fields = {
+                        email: document.getElementById('field-email').value.trim(),
+                        username: document.getElementById('field-username').value.trim(),
+                        password: document.getElementById('field-password').value.trim(),
+                        note: document.getElementById('field-note').value.trim()
+                    };
+                    if (!fields.email && !fields.username && !fields.password) { showToast('Fill at least one field', 'error'); return; }
+                    noteData.fields = fields;
+                }
+                
                 if (editingId) {
-                    await updateDoc(doc(db, "necxy_items", editingId), payload);
-                    showToast('Updated');
+                    const idx = notes.findIndex(n=>n.id===editingId);
+                    if (idx!==-1) notes[idx] = noteData;
+                } else notes.push(noteData);
+                
+                saveNotes();
+                closeAddModal();
+                showToast(editingId?'Updated':'Saved', 'success');
+            };
+
+            window.openViewModal = function(id) {
+                const note = notes.find(n=>n.id===id);
+                if (!note) return;
+                currentViewId = id;
+                document.getElementById('view-category-badge').innerText = categoryDisplay[note.category] || note.category;
+                document.getElementById('view-title').innerText = note.title || '';
+                document.getElementById('view-date').innerText = note.timestamp ? new Date(note.timestamp).toLocaleString() : '';
+                
+                // used badge
+                const usedBadge = document.getElementById('view-used-badge');
+                if (note.used) {
+                    usedBadge.classList.remove('hidden');
                 } else {
-                    await addDoc(collection(db, "necxy_items"), payload);
-                    showToast('Saved');
+                    usedBadge.classList.add('hidden');
                 }
-
-                modal.style.display = 'none';
-                resetModal();
-            } catch (err) {
-                showToast(err.message);
-            } finally {
-                saveBtn.disabled = false;
-                saveBtn.innerHTML = 'SAVE TO VAULT';
-            }
-        });
-
-        closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
-        window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
-
-        // Auth state
-        onAuthStateChanged(auth, async (user) => {
-            currentUser = user;
-            if (user) {
-                // Fetch user profile
-                const q = query(collection(db, "users"), where("uid", "==", user.uid));
-                const querySnap = await getDocs(q);
-                if (!querySnap.empty) {
-                    userProfile = querySnap.docs[0].data();
-                    popupNickname.textContent = userProfile.nickname || '-';
-                    popupRealname.textContent = userProfile.realname || '-';
-                    popupEmail.textContent = user.email;
+                
+                // tag badge
+                const tagBadge = document.getElementById('view-tag-badge');
+                if (note.tag) {
+                    tagBadge.innerText = note.tag;
+                    tagBadge.classList.remove('hidden');
                 } else {
-                    popupNickname.textContent = '-';
-                    popupRealname.textContent = '-';
-                    popupEmail.textContent = user.email;
+                    tagBadge.classList.add('hidden');
                 }
-                renderVault();
-            } else {
-                userProfile = null;
-                renderAuthUI();
-                if (unsubscribeItems) unsubscribeItems();
+                
+                const container = document.getElementById('view-fields-container');
+                container.innerHTML = '';
+                if (note.category !== 'notes' && note.fields) {
+                    if (note.fields.email) addFieldRow(container, 'email', note.fields.email, false);
+                    if (note.fields.username) addFieldRow(container, 'username', note.fields.username, false);
+                    if (note.fields.password) addFieldRow(container, 'password', note.fields.password, true);
+                    if (note.fields.note) addFieldRow(container, 'note', note.fields.note, false);
+                } else {
+                    addFieldRow(container, 'content', note.content || '', false);
+                }
+                
+                document.getElementById('modal-view-note').classList.replace('hidden', 'flex');
+            };
+
+            function addFieldRow(container, label, value, isPassword = false) {
+                const row = document.createElement('div');
+                row.className = 'field-row';
+                const fieldId = 'field-'+label+'-'+Math.random();
+                if (isPassword) {
+                    row.innerHTML = `
+                        <span class="field-label">${label}</span>
+                        <span class="password-value" id="${fieldId}">••••••••</span>
+                        <button class="eye-btn" onclick="togglePassword('${fieldId}', '${value.replace(/'/g, "\\'")}')"><i class="fa-regular fa-eye"></i></button>
+                        <button class="copy-btn" onclick="copyText('${value.replace(/'/g, "\\'")}')"><i class="fa-regular fa-copy"></i></button>
+                    `;
+                } else {
+                    row.innerHTML = `
+                        <span class="field-label">${label}</span>
+                        <span class="field-value">${escapeHtml(value)}</span>
+                        <button class="copy-btn" onclick="copyText('${value.replace(/'/g, "\\'")}')"><i class="fa-regular fa-copy"></i></button>
+                    `;
+                }
+                container.appendChild(row);
             }
-        });
+
+            window.togglePassword = function(spanId, realValue) {
+                const span = document.getElementById(spanId);
+                const btn = span.nextElementSibling;
+                if (span.innerText === '••••••••') {
+                    span.innerText = realValue;
+                    btn.innerHTML = '<i class="fa-regular fa-eye-slash"></i>';
+                } else {
+                    span.innerText = '••••••••';
+                    btn.innerHTML = '<i class="fa-regular fa-eye"></i>';
+                }
+            };
+
+            window.copyText = function(text) {
+                navigator.clipboard.writeText(text).then(()=>showToast('Copied!','success'));
+            };
+
+            function escapeHtml(unsafe) {
+                return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            }
+
+            window.closeViewModal = function() { document.getElementById('modal-view-note').classList.add('hidden'); currentViewId = null; };
+            window.editCurrentNote = function() {
+                if (!currentViewId) return;
+                const note = notes.find(n=>n.id===currentViewId);
+                if (note) { closeViewModal(); openAddModal(note); }
+            };
+
+            // Toast
+            window.showToast = function(msg, type='info') {
+                const toast = document.createElement('div');
+                let bg = type==='error' ? 'from-red-500/10 to-red-500/5 border-red-500/20' : 'from-primary/10 to-primary/5 border-primary/20';
+                let icon = type==='error' ? 'fa-exclamation-circle' : 'fa-check-circle';
+                toast.className = `px-6 py-3 rounded-full backdrop-blur-xl border shadow-2xl animate-slide-down mx-auto w-max bg-gradient-to-br ${bg} text-white`;
+                toast.innerHTML = `<i class="fa-solid ${icon} mr-2"></i><span class="text-xs font-bold uppercase">${msg}</span>`;
+                document.getElementById('toast-area').appendChild(toast);
+                setTimeout(()=>toast.remove(), 2800);
+            };
+
+            // Initialize
+            let currentAuthMode = 'login';
+            loadUser();
+            loadNotes();
+            loadDeletedNotes();
+
+            // Expose functions to global
+            window.closeAllModals = function() { closeAddModal(); closeViewModal(); closeProfileModal(); closeConfirmModal(); closeHistoryModal(); closeHistoryViewModal(); };
+        })();
     </script>
 </body>
 </html>
