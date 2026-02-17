@@ -22,7 +22,8 @@
                         ott: '#ff5e62',
                         vpn: '#2193b0',
                         notes: '#654ea3',
-                        used: '#FFA500'
+                        used: '#FFA500',
+                        fb: '#1877F2'
                     },
                     fontFamily: { sans: ['Outfit', 'sans-serif'] },
                     animation: { 
@@ -63,11 +64,40 @@
             min-height: 100vh;
         }
 
+        /* Animated background orbs (copied from first web) */
+        .bg-orbs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .bg-orbs span {
+            position: absolute;
+            width: 30vmax;
+            height: 30vmax;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 26, 76, 0.2), transparent 70%);
+            animation: float 20s infinite ease-in-out;
+        }
+        .bg-orbs span:nth-child(1) { top: 10%; left: 10%; animation-duration: 25s; }
+        .bg-orbs span:nth-child(2) { bottom: 15%; right: 10%; width: 40vmax; height: 40vmax; background: radial-gradient(circle at 70% 70%, rgba(200, 0, 50, 0.15), transparent 80%); animation-duration: 30s; }
+        .bg-orbs span:nth-child(3) { top: 40%; left: 60%; width: 25vmax; height: 25vmax; background: radial-gradient(circle at 40% 40%, rgba(255, 80, 120, 0.15), transparent 70%); animation-duration: 22s; }
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(2%, 3%) scale(1.05); }
+            66% { transform: translate(-2%, 1%) scale(0.95); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+
         #auth-screen { 
             position: fixed; 
             inset: 0; 
             z-index: 999; 
-            background: #000;
+            background: transparent; /* let orbs show through */
             display: flex; 
             flex-direction: column; 
             align-items: center; 
@@ -75,7 +105,7 @@
             padding: 20px; 
         }
         .app-layout { 
-            padding-top: 140px; 
+            padding-top: 0;  /* changed from 140px to 0 */
             padding-bottom: 30px; 
             position: relative; 
             z-index: 1; 
@@ -227,6 +257,11 @@
             border: 1px solid rgba(255,165,0,0.3);
             color: #FFA500;
         }
+        .fb-badge {
+            background: rgba(24,119,242,0.15);
+            border: 1px solid rgba(24,119,242,0.3);
+            color: #1877F2;
+        }
         
         .gradient-text {
             background: linear-gradient(135deg, #FF003C 0%, #22C55E 100%);
@@ -235,25 +270,7 @@
             background-clip: text;
         }
 
-        .fab {
-            position: fixed;
-            bottom: 30px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 30px;
-            background: linear-gradient(135deg, #FF003C, #CC002F);
-            box-shadow: 0 10px 30px rgba(255,0,60,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-            z-index: 40;
-            transition: all 0.2s;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .fab:active { transform: scale(0.95); }
+        /* FAB removed from bottom, now in header */
 
         .copy-btn, .eye-btn, .delete-history-btn {
             background: transparent;
@@ -395,6 +412,10 @@
     </style>
 </head>
 <body>
+    <!-- Animated background orbs (exactly from first web) -->
+    <div class="bg-orbs">
+        <span></span><span></span><span></span>
+    </div>
 
     <!-- Toast Area -->
     <div id="toast-area" class="fixed top-24 left-0 right-0 z-[200] flex flex-col items-center gap-3 pointer-events-none px-4"></div>
@@ -465,9 +486,15 @@
                 </h1>
                 <span id="note-count" class="text-[10px] font-bold bg-primary/20 px-3 py-1 rounded-full border border-primary/30">0</span>
             </div>
-            <button onclick="openProfileModal()" class="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center border border-white/10 hover:scale-105 transition">
-                <i class="fa-regular fa-user text-primary"></i>
-            </button>
+            <div class="flex items-center gap-2">
+                <!-- New add button in header -->
+                <button onclick="openAddModal()" class="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center border border-white/10 hover:scale-105 transition">
+                    <i class="fa-solid fa-plus text-primary"></i>
+                </button>
+                <button onclick="openProfileModal()" class="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center border border-white/10 hover:scale-105 transition">
+                    <i class="fa-regular fa-user text-primary"></i>
+                </button>
+            </div>
         </div>
 
         <div class="filter-bar no-scrollbar">
@@ -484,7 +511,8 @@
             <button onclick="clearSearch()" class="text-gray-500 hover:text-white"><i class="fa-solid fa-times"></i></button>
         </div>
 
-        <section id="page-home" class="px-4 pt-28 animate-fade-in block">
+        <!-- Added mt-[180px] to start grid right below search bar, removed pt-28 -->
+        <section id="page-home" class="px-4 mt-[180px] animate-fade-in block">
             <div id="notes-grid" class="grid grid-cols-1 gap-4 pb-24">
                 <div class="text-center py-20 opacity-60">
                     <i class="fa-regular fa-pen-to-square text-5xl text-white/20 mb-3"></i>
@@ -494,9 +522,7 @@
             </div>
         </section>
 
-        <button onclick="openAddModal()" class="fab">
-            <i class="fa-solid fa-plus"></i>
-        </button>
+        <!-- FAB removed from bottom -->
     </div>
 
     <!-- ADD / EDIT NOTE MODAL -->
@@ -511,8 +537,9 @@
                     <div class="custom-dropdown" id="category-dropdown">
                         <div class="dropdown-selected" onclick="toggleDropdown()">
                             <span id="selected-category-display">
-                                <i class="fa-solid fa-note-sticky cat-notes"></i>
-                                <span>Notes</span>
+                                <!-- Default to social now -->
+                                <i class="fa-brands fa-instagram cat-social"></i>
+                                <span>Social</span>
                             </span>
                             <i class="fa-solid fa-chevron-down text-gray-400"></i>
                         </div>
@@ -531,7 +558,7 @@
                             </div>
                         </div>
                     </div>
-                    <input type="hidden" id="note-category" value="notes">
+                    <input type="hidden" id="note-category" value="social"> <!-- default social -->
                 </div>
 
                 <div>
@@ -546,6 +573,14 @@
                     <span class="text-[10px] font-bold text-gray-400 uppercase">Mark as used</span>
                     <label class="switch">
                         <input type="checkbox" id="note-used">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <!-- New FB Fixed toggle (initially hidden, shown only for social) -->
+                <div id="fb-toggle-container" class="flex items-center justify-between glass-panel p-3 rounded-xl border border-white/10">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase"><i class="fa-brands fa-facebook-f mr-1 text-[#1877F2]"></i> FB Fixed</span>
+                    <label class="switch">
+                        <input type="checkbox" id="note-fbfixed">
                         <span class="slider"></span>
                     </label>
                 </div>
@@ -576,6 +611,7 @@
                 <div class="flex flex-wrap gap-2 items-start mb-3">
                     <span id="view-category-badge" class="category-badge text-[10px]">category</span>
                     <span id="view-used-badge" class="category-badge used-badge hidden">used</span>
+                    <span id="view-fb-badge" class="category-badge fb-badge hidden">FB</span>
                     <span id="view-tag-badge" class="category-badge bg-white/5 border-white/10 hidden"></span>
                     <span id="view-date" class="text-[9px] text-gray-500 font-mono ml-auto">just now</span>
                 </div>
@@ -649,6 +685,7 @@
                 <div class="flex flex-wrap gap-2 items-start mb-3">
                     <span id="history-view-category" class="category-badge text-[10px]"></span>
                     <span id="history-view-used" class="category-badge used-badge hidden">used</span>
+                    <span id="history-view-fb" class="category-badge fb-badge hidden">FB</span>
                     <span id="history-view-tag" class="category-badge bg-white/5 border-white/10 hidden"></span>
                     <span id="history-view-deleted" class="text-[9px] text-gray-500 font-mono ml-auto"></span>
                 </div>
@@ -837,8 +874,8 @@
                         const noteDoc = await noteRef.get();
                         if (noteDoc.exists) {
                             const noteData = noteDoc.data();
-                            // Add to deletedNotes
-                            await db.collection('deletedNotes').add({
+                            // Add to deletedNotes and capture the new doc ID
+                            const addedRef = await db.collection('deletedNotes').add({
                                 ...noteData,
                                 userId: currentUser.uid,
                                 deletedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -846,8 +883,18 @@
                             // Delete from notes
                             await noteRef.delete();
                             
-                            // Update local state
+                            // Update local notes
                             notes = notes.filter(n => n.id !== currentViewId);
+                            
+                            // Add to local deletedNotes for immediate history update
+                            const newDeleted = {
+                                id: addedRef.id,
+                                ...noteData,
+                                userId: currentUser.uid,
+                                deletedAt: new Date() // temporary, will be replaced on next load
+                            };
+                            deletedNotes.unshift(newDeleted);
+                            
                             renderNotes();
                             closeViewModal();
                             showToast('Entry moved to history', 'success');
@@ -906,6 +953,7 @@
             async function loadDeletedNotes() {
                 if (!currentUser) return;
                 try {
+                    // Try with orderBy first (may fail if index missing)
                     const snapshot = await db.collection('deletedNotes')
                         .where('userId', '==', currentUser.uid)
                         .orderBy('deletedAt', 'desc')
@@ -915,7 +963,27 @@
                         ...doc.data()
                     }));
                 } catch (error) {
-                    showToast('Error loading history: ' + error.message, 'error');
+                    // If index error, fallback to simple query without orderBy
+                    if (error.code === 'failed-precondition' || error.message.includes('index')) {
+                        console.warn('Index missing, falling back to unordered query');
+                        const snapshot = await db.collection('deletedNotes')
+                            .where('userId', '==', currentUser.uid)
+                            .get();
+                        deletedNotes = snapshot.docs.map(doc => ({
+                            id: doc.id,
+                            ...doc.data()
+                        }));
+                        // Sort manually by deletedAt (if exists) descending
+                        deletedNotes.sort((a, b) => {
+                            const ta = a.deletedAt?.seconds || 0;
+                            const tb = b.deletedAt?.seconds || 0;
+                            return tb - ta;
+                        });
+                        showToast('History loaded (index missing, sorted locally)', 'info');
+                    } else {
+                        showToast('Error loading history: ' + error.message, 'error');
+                        deletedNotes = [];
+                    }
                 }
             }
 
@@ -925,6 +993,7 @@
                 const title = document.getElementById('note-title').value.trim();
                 const tag = document.getElementById('note-tag').value.trim();
                 const used = document.getElementById('note-used').checked;
+                const fbFixed = document.getElementById('note-fbfixed')?.checked || false; // new field
                 
                 if (!title) { showToast('Title required', 'error'); return; }
                 if (!currentUser) { showToast('You must be logged in', 'error'); return; }
@@ -940,6 +1009,7 @@
                         title,
                         tag: tag || null,
                         used,
+                        fbFixed, // store fbFixed
                         timestamp: editingId ? null : firebase.firestore.FieldValue.serverTimestamp() // let server set on create
                     };
                     
@@ -1026,6 +1096,7 @@
                         preview = (note.content || '').substring(0,60) + ((note.content||'').length>60?'…':'');
                     }
                     const usedBadge = note.used ? '<span class="text-[7px] font-black text-orange-400 uppercase bg-orange-400/10 px-1.5 py-0.5 rounded-md ml-1">used</span>' : '';
+                    const fbBadge = note.fbFixed ? '<span class="text-[7px] font-black text-[#1877F2] uppercase bg-[#1877F2]/10 px-1.5 py-0.5 rounded-md ml-1"><i class="fa-brands fa-facebook-f mr-1"></i>FB</span>' : '';
                     const tagBadge = note.tag ? `<span class="text-[7px] font-black text-white/60 uppercase bg-white/5 px-1.5 py-0.5 rounded-md ml-1">${note.tag}</span>` : '';
                     
                     html += `<div class="note-card rounded-2xl p-4 flex items-center gap-4 group animate-fade-in" onclick="openViewModal('${note.id}')">
@@ -1034,6 +1105,7 @@
                             <div class="flex items-center flex-wrap gap-1 mb-0.5">
                                 <span class="text-[7px] font-black text-white/40 uppercase bg-white/5 px-1.5 py-0.5 rounded-md">${catName}</span>
                                 ${usedBadge}
+                                ${fbBadge}
                                 ${tagBadge}
                             </div>
                             <h3 class="font-bold text-[13px] text-white leading-tight truncate">${note.title || 'Untitled'}</h3>
@@ -1085,7 +1157,7 @@
 
             // ========== MODAL FUNCTIONS ==========
             window.openAddModal = function(editData = null) {
-                const cat = editData?.category || 'notes';
+                const cat = editData?.category || 'social'; // default to social
                 document.getElementById('note-category').value = cat;
                 const displaySpan = document.getElementById('selected-category-display');
                 let iconHtml = '', catName = '';
@@ -1107,6 +1179,7 @@
                 document.getElementById('note-title').value = editData?.title || '';
                 document.getElementById('note-tag').value = editData?.tag || '';
                 document.getElementById('note-used').checked = editData?.used || false;
+                document.getElementById('note-fbfixed').checked = editData?.fbFixed || false;
                 document.getElementById('note-content').value = editData?.content || '';
                 document.getElementById('field-email').value = editData?.fields?.email || '';
                 document.getElementById('field-username').value = editData?.fields?.username || '';
@@ -1116,6 +1189,7 @@
                 document.getElementById('modal-add-title').innerText = editData ? 'edit record' : 'new record';
                 document.getElementById('save-btn-text').innerHTML = editData ? '<i class="fa-regular fa-pen-to-square mr-2"></i> update entry' : '<i class="fa-regular fa-floppy-disk mr-2"></i> save entry';
                 toggleFieldsBasedOnCategory(cat);
+                toggleFbField(cat); // Show/hide FB toggle based on category
                 document.getElementById('modal-add-note').classList.replace('hidden', 'flex');
             };
 
@@ -1134,6 +1208,15 @@
                 } else {
                     simpleGroup.classList.add('hidden');
                     structuredGroup.classList.remove('hidden');
+                }
+            }
+
+            function toggleFbField(cat) {
+                const fbContainer = document.getElementById('fb-toggle-container');
+                if (cat === 'social') {
+                    fbContainer.style.display = 'flex';
+                } else {
+                    fbContainer.style.display = 'none';
                 }
             }
 
@@ -1161,6 +1244,7 @@
                 displaySpan.innerHTML = iconHtml + '<span>' + catName + '</span>';
                 document.getElementById('dropdown-options').classList.remove('show');
                 toggleFieldsBasedOnCategory(value);
+                toggleFbField(value); // update FB toggle visibility
             };
 
             // Close dropdown when clicking outside
@@ -1183,6 +1267,10 @@
                 const usedBadge = document.getElementById('view-used-badge');
                 if (note.used) usedBadge.classList.remove('hidden');
                 else usedBadge.classList.add('hidden');
+                
+                const fbBadge = document.getElementById('view-fb-badge');
+                if (note.fbFixed) fbBadge.classList.remove('hidden');
+                else fbBadge.classList.add('hidden');
                 
                 const tagBadge = document.getElementById('view-tag-badge');
                 if (note.tag) {
@@ -1284,8 +1372,8 @@
                     return;
                 }
                 let html = '';
-                deletedNotes.forEach((item, index) => {
-                    const date = item.deletedAt?.seconds ? new Date(item.deletedAt.seconds * 1000).toLocaleString() : '';
+                deletedNotes.forEach((item) => {
+                    const date = item.deletedAt?.seconds ? new Date(item.deletedAt.seconds * 1000).toLocaleString() : (item.deletedAt ? new Date(item.deletedAt).toLocaleString() : '');
                     html += `
                         <div class="glass-panel p-4 rounded-2xl border border-white/5 flex justify-between items-center">
                             <div class="flex-1 cursor-pointer" onclick="openHistoryViewModal('${item.id}')">
@@ -1305,11 +1393,16 @@
                 historyViewDocId = docId;
                 document.getElementById('history-view-category').innerText = categoryDisplay[item.category] || item.category;
                 document.getElementById('history-view-title').innerText = item.title || '';
-                document.getElementById('history-view-deleted').innerText = item.deletedAt?.seconds ? new Date(item.deletedAt.seconds * 1000).toLocaleString() : '';
+                const deletedDate = item.deletedAt?.seconds ? new Date(item.deletedAt.seconds * 1000).toLocaleString() : (item.deletedAt ? new Date(item.deletedAt).toLocaleString() : '');
+                document.getElementById('history-view-deleted').innerText = deletedDate;
                 
                 const usedBadge = document.getElementById('history-view-used');
                 if (item.used) usedBadge.classList.remove('hidden');
                 else usedBadge.classList.add('hidden');
+                
+                const fbBadge = document.getElementById('history-view-fb');
+                if (item.fbFixed) fbBadge.classList.remove('hidden');
+                else fbBadge.classList.add('hidden');
                 
                 const tagBadge = document.getElementById('history-view-tag');
                 if (item.tag) {
