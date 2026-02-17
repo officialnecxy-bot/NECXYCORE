@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NECXYCORE · Firebase Vault</title>
+    <title>NECXYCORE</title>
     
     <!-- Tailwind & Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -427,7 +427,7 @@
                 <div class="relative mb-6">
                     <div class="absolute inset-0 bg-primary/20 blur-[50px] rounded-full animate-pulse-slow"></div>
                     <h1 class="text-5xl font-black tracking-tighter leading-none mb-2 relative z-10">
-                        <span class="text-primary drop-shadow-[0_0_15px_rgba(255,0,60,0.6)]">NECXY</span>
+                        <span class="text-primary drop-shadow-[0_0_15px_rgba(255,0,60,0.6)]">NECX</span>
                         <span class="text-white">CORE</span>
                     </h1>
                 </div>
@@ -482,7 +482,7 @@
         <div class="header-capsule">
             <div class="flex items-center gap-3">
                 <h1 class="text-xl font-black tracking-tighter">
-                    <span class="text-primary">NECXY</span><span class="text-white">CORE</span>
+                    <span class="text-primary">NECX</span><span class="text-white">CORE</span>
                 </h1>
                 <span id="note-count" class="text-[10px] font-bold bg-primary/20 px-3 py-1 rounded-full border border-primary/30">0</span>
             </div>
@@ -692,7 +692,7 @@
                 <h2 id="history-view-title" class="text-2xl font-black uppercase text-white leading-none mb-5 gradient-text"></h2>
                 <div id="history-view-fields" class="space-y-3 mb-8"></div>
                 <div class="flex gap-3 mt-4">
-                    <button onclick="confirmPermanentDelete()" class="flex-1 py-4 rounded-xl bg-gradient-to-br from-red-500/20 to-red-500/10 text-red-500 font-black uppercase text-xs border border-red-500/30 hover:scale-[1.02] transition"><i class="fa-regular fa-trash-can mr-2"></i> permanently delete</button>
+                    <button onclick="confirmPermanentDelete()" class="flex-1 py-4 rounded-xl bg-gradient-to-br from-red-500/20 to-red-500/10 text-red-500 font-black uppercase text-xs border border-red-500/30 hover:scale-[1.02] transition"><i class="fa-regular fa-trash-can mr-2"></i> Delete</button>
                     <button onclick="closeHistoryViewModal()" class="flex-1 py-4 rounded-xl glass-panel text-white font-black uppercase text-xs border border-white/5 hover:scale-[1.02] transition">back</button>
                 </div>
             </div>
@@ -758,6 +758,28 @@
                 vpn: '#2193b0',
                 notes: '#654ea3'
             };
+
+            // ========== NEW RELATIVE TIME FUNCTION ==========
+            function getRelativeTime(timestamp) {
+                if (!timestamp) return '';
+                let date;
+                if (timestamp.seconds) {
+                    date = new Date(timestamp.seconds * 1000);
+                } else {
+                    date = new Date(timestamp);
+                }
+                const now = new Date();
+                const diffMs = now - date;
+                const diffSec = Math.floor(diffMs / 1000);
+                const diffMin = Math.floor(diffSec / 60);
+                const diffHour = Math.floor(diffMin / 60);
+                const diffDay = Math.floor(diffHour / 24);
+
+                if (diffSec < 60) return 'just now';
+                if (diffMin < 60) return diffMin + 'm ago';
+                if (diffHour < 24) return diffHour + 'h ago';
+                return diffDay + 'd ago';
+            }
 
             // ========== AUTH STATE OBSERVER ==========
             auth.onAuthStateChanged(async (user) => {
@@ -1069,6 +1091,12 @@
             };
 
             // ========== UI RENDERING ==========
+            function formatTimestamp(ts) {
+                if (!ts) return '';
+                if (ts.seconds) return new Date(ts.seconds * 1000).toLocaleDateString();
+                return new Date(ts).toLocaleDateString();
+            }
+
             function renderNotes() {
                 const grid = document.getElementById('notes-grid');
                 const countSpan = document.getElementById('note-count');
@@ -1099,6 +1127,10 @@
                     const fbBadge = note.fbFixed ? '<span class="text-[7px] font-black text-[#1877F2] uppercase bg-[#1877F2]/10 px-1.5 py-0.5 rounded-md ml-1"><i class="fa-brands fa-facebook-f mr-1"></i>FB</span>' : '';
                     const tagBadge = note.tag ? `<span class="text-[7px] font-black text-white/60 uppercase bg-white/5 px-1.5 py-0.5 rounded-md ml-1">${note.tag}</span>` : '';
                     
+                    // MODIFIED: Show relative time + absolute date
+                    const relativeTime = getRelativeTime(note.timestamp);
+                    const absoluteDate = formatTimestamp(note.timestamp);
+                    
                     html += `<div class="note-card rounded-2xl p-4 flex items-center gap-4 group animate-fade-in" onclick="openViewModal('${note.id}')">
                         <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-black/40 to-black/60 flex items-center justify-center border border-white/5"><i class="${iconClass} text-2xl" style="color: ${categoryColors[note.category] || '#FF003C'}"></i></div>
                         <div class="flex-1 min-w-0">
@@ -1110,18 +1142,12 @@
                             </div>
                             <h3 class="font-bold text-[13px] text-white leading-tight truncate">${note.title || 'Untitled'}</h3>
                             <p class="text-[10px] font-mono text-gray-400 mt-1 truncate">${preview}</p>
-                            <p class="text-[8px] font-bold text-yellow-400/50 mt-1">${formatTimestamp(note.timestamp)}</p>
+                            <p class="text-[8px] font-bold text-yellow-400/50 mt-1">${relativeTime} • ${absoluteDate}</p>
                         </div>
                         <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/5 group-hover:bg-primary/20 group-hover:text-primary"><i class="fa-solid fa-chevron-right text-[10px]"></i></div>
                     </div>`;
                 });
                 grid.innerHTML = html;
-            }
-
-            function formatTimestamp(ts) {
-                if (!ts) return '';
-                if (ts.seconds) return new Date(ts.seconds * 1000).toLocaleDateString();
-                return new Date(ts).toLocaleDateString();
             }
 
             function matchesSearch(note) {
@@ -1262,7 +1288,9 @@
                 document.getElementById('view-category-badge').innerText = categoryDisplay[note.category] || note.category;
                 document.getElementById('view-title').innerText = note.title || '';
                 const ts = note.timestamp?.seconds ? new Date(note.timestamp.seconds * 1000) : (note.timestamp ? new Date(note.timestamp) : new Date());
-                document.getElementById('view-date').innerText = ts.toLocaleString();
+                // MODIFIED: Show relative time + absolute date
+                const relativeTime = getRelativeTime(note.timestamp);
+                document.getElementById('view-date').innerText = relativeTime + ' • ' + ts.toLocaleString();
                 
                 const usedBadge = document.getElementById('view-used-badge');
                 if (note.used) usedBadge.classList.remove('hidden');
